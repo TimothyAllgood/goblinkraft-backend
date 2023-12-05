@@ -13,21 +13,60 @@ datasource db {
 model Profile {
   id     Int     @id @default(autoincrement())
   bio    String?
-  name    String?
+  name   String?
   user   User    @relation(fields: [userId], references: [id])
   userId Int     @unique
 }
 
 model User {
-  id      Int      @id @default(autoincrement())
-  email   String   @unique
-  username String @unique
-  password String
+  id           Int        @id @default(autoincrement())
+  email        String     @unique
+  username     String     @unique
+  password     String?
   subscription String?
-  subscribed Boolean @default(false)
-  verified  Boolean @default(false)
-  role Role @default(USER)
-  profile Profile?
+  subscribed   Boolean    @default(false)
+  verified     Boolean    @default(false)
+  role         Role       @default(USER)
+  profile      Profile?
+  type         String     @default("password")
+  campaigns    Campaign[]
+}
+
+model Campaign {
+  id      Int      @id @default(autoincrement())
+  name    String?
+  dm      User     @relation(fields: [userId], references: [id])
+  userId  Int
+  players Player[]
+}
+
+model Player {
+  id        Int        @id @default(autoincrement())
+  name      String?
+  class     String?
+  level     String?
+  campaigns Campaign[]
+}
+
+model RollTable {
+  id         Int             @id @default(autoincrement())
+  name       String
+  category   Category        @relation(fields: [categoryId], references: [id])
+  categoryId Int
+  items      RollTableItem[]
+}
+
+model RollTableItem {
+  id          Int       @id @default(autoincrement())
+  name        String
+  rollTable   RollTable @relation(fields: [rollTableId], references: [id])
+  rollTableId Int       @unique
+}
+
+model Category {
+  id        Int         @id @default(autoincrement())
+  name      String
+  RollTable RollTable[]
 }
 
 enum Role {

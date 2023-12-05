@@ -1,7 +1,9 @@
 import { Request, Response } from "express";
 import { PrismaClient, User } from "@prisma/client";
+import axios from "axios";
+const qs = require("fast-querystring");
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
+const argon2 = require("argon2");
 const prisma = new PrismaClient();
 const sendEmail = require("../util/sendEmail");
 
@@ -47,10 +49,8 @@ const register = async (req: Request, res: Response) => {
       });
     }
 
-    // CREATE SALT FOR HASH
-    const salt = await bcrypt.genSalt(10);
     // HASH USER PASSWORD
-    const hash = await bcrypt.hash(req.body.password, salt);
+    const hash = await argon2.hash(req.body.password);
     // CREATE USER WITH HASHED PASSWORD
     const newUser: User = await prisma.user.create({
       data: {
@@ -95,9 +95,9 @@ const login = async (req: Request, res: Response) => {
     }
 
     // CHECK IF PASSWORDS MATCH
-    const isMatch: boolean = await bcrypt.compare(
-      req.body.password,
-      foundUser.password
+    const isMatch: boolean = await argon2.verify(
+      foundUser.password,
+      req.body.password
     );
     if (!isMatch) {
       return res.status(400).json({
@@ -131,16 +131,12 @@ const login = async (req: Request, res: Response) => {
 
     return res.status(200).json({ token, message: "Log In Successful" });
   } catch (error) {
+    console.log(error);
     return res.status(500).json({
       status: 500,
       message: "Something went wrong. Please try again",
     });
   }
-};
-
-const getAll = async (req: Request, res: Response, next: any) => {
-  const allUsers: User[] = await prisma.user.findMany();
-  res.json(allUsers);
 };
 
 const sendVerification = async (req: Request, res: Response) => {
@@ -167,7 +163,7 @@ const sendVerification = async (req: Request, res: Response) => {
 };
 
 const generateVerification = async (id: number, email: string) => {
-  const link = `http://localhost:8080/api/v1/users/verify/${id}`;
+  const link = `http://localhost:5173/verify/${id}`;
 
   await sendEmail(email, "Verify Account", link);
 };
@@ -189,7 +185,7 @@ const verifyUser = async (req: Request, res: Response) => {
 
 const sendPasswordReset = async (req: Request, res: Response) => {
   try {
-    const user = await prisma.user.findUnique({
+    const user = await prisma.user.findFirst({
       where: { email: req.body.email },
     });
     if (!user) {
@@ -198,7 +194,7 @@ const sendPasswordReset = async (req: Request, res: Response) => {
         .json({ message: "No user found with that email address" });
     }
 
-    const link = `http://localhost:3000/reset-password/${user.id}`;
+    const link = `http://localhost:5173/reset-password/${user.id}`;
 
     await sendEmail(user.email, "Password reset", link);
 
@@ -213,36 +209,170 @@ const sendPasswordReset = async (req: Request, res: Response) => {
 };
 
 const resetPassword = async (req: Request, res: Response) => {
-  jwt.verify(
-    req.params.token,
-    process.env.JWT_SECRET,
-    async (err: Error, decodedUser: User) => {
-      if (err || !decodedUser) {
-        return res.status(401).json({
-          message: "You are not authorized. Please login and try again",
-        });
-      } else {
-        // CREATE SALT FOR HASH
-        const salt = await bcrypt.genSalt(10);
-        // HASH USER PASSWORD
-        const hash = await bcrypt.hash(req.body.password, salt);
+  // HASH USER PASSWORD
+  const hash = await argon2.hash(req.body.password);
+  console.log(req.body.id);
+  await prisma.user.update({
+    where: { id: parseInt(req.body.id, 10) },
+    data: { password: hash },
+  });
+  await res.status(201).json({ message: "Password Successfully Reset" });
+};
 
-        await prisma.user.update({
-          where: { id: parseInt(req.params.id, 10) },
-          data: { password: hash },
-        });
-        await res.status(201).json({ message: "Password Successfully Reset" });
-      }
+const getGoogleUrl = async (req: Request, res: Response) => {
+  const stringifiedParams = qs.stringify({
+    client_id: process.env.GOOGLE_CLIENT_ID,
+    redirect_uri: "http://localhost:5173/",
+    scope: [
+      "https://www.googleapis.com/auth/userinfo.email",
+      "https://www.googleapis.com/auth/userinfo.profile",
+    ].join(" "), // space seperated string
+    response_type: "code",
+    access_type: "offline",
+    prompt: "consent",
+  });
+
+  const googleLoginUrl = `https://accounts.google.com/o/oauth2/v2/auth?${stringifiedParams}`;
+
+  res.json({ url: googleLoginUrl });
+};
+
+async function getAccessTokenFromCode(code: string) {
+  try {
+    const { data } = await axios({
+      url: `https://oauth2.googleapis.com/token`,
+      method: "post",
+      data: {
+        client_id: process.env.GOOGLE_CLIENT_ID,
+        client_secret: process.env.GOOGLE_CLIENT_SECRET,
+        redirect_uri: "http://localhost:5173/",
+        grant_type: "authorization_code",
+        code: code,
+      },
+    });
+    return data.access_token;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+const getGoogleUserInfo = async (req: Request, res: Response) => {
+  let access_token = await getAccessTokenFromCode(req.body.code);
+  try {
+    const { data } = await axios({
+      url: "https://www.googleapis.com/oauth2/v2/userinfo",
+      method: "get",
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+      },
+    });
+
+    const foundEmail: User | null = await prisma.user.findUnique({
+      where: { email: data.email },
+    });
+
+    if (foundEmail && foundEmail.type !== "google") {
+      await prisma.user.update({
+        where: { email: data.email },
+        data: { type: "google" },
+      });
+
+      // CREATE TOKEN PAYLOAD
+      const payload = {
+        id: foundEmail.id,
+        username: foundEmail.username,
+        role: foundEmail.role,
+        subscribed: foundEmail.subscribed,
+        subscription: foundEmail.subscription,
+      };
+      const secret = process.env.SECRET;
+      const expiration = { expiresIn: "160000s" };
+
+      // SIGN TOKEN
+      const token = await jwt.sign(payload, secret, expiration);
+
+      // SEND SUCCESS WITH TOKEN
+
+      return res.status(200).json({ token, message: "Log In Successful" });
     }
-  );
+
+    if (foundEmail && foundEmail.type === "google") {
+      // CREATE TOKEN PAYLOAD
+      const payload = {
+        id: foundEmail.id,
+        username: foundEmail.username,
+        role: foundEmail.role,
+        subscribed: foundEmail.subscribed,
+        subscription: foundEmail.subscription,
+      };
+      const secret = process.env.SECRET;
+      const expiration = { expiresIn: "160000s" };
+
+      // SIGN TOKEN
+      const token = await jwt.sign(payload, secret, expiration);
+
+      // SEND SUCCESS WITH TOKEN
+
+      return res.status(200).json({ token, message: "Log In Successful" });
+    }
+
+    if (!foundEmail) {
+      let user = {
+        email: data.email,
+        username: data.name,
+        type: "google",
+        verified: true,
+      };
+
+      let newUser = await prisma.user.create({
+        data: user,
+      });
+
+      // CREATE TOKEN PAYLOAD
+      const payload = {
+        id: newUser.id,
+        username: newUser.username,
+        role: newUser.role,
+        subscribed: newUser.subscribed,
+        subscription: newUser.subscription,
+      };
+      const secret = process.env.SECRET;
+      const expiration = { expiresIn: "160000s" };
+
+      // SIGN TOKEN
+      const token = await jwt.sign(payload, secret, expiration);
+
+      // SEND SUCCESS WITH TOKEN
+
+      return res.status(200).json({ token, message: "Log In Successful" });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const getUser = async (req: Request, res: Response) => {
+  res.send("User protected route");
+};
+
+const getAdmin = async (req: Request, res: Response) => {
+  res.send("Admin protected route");
+};
+
+const getOpen = async (req: Request, res: Response) => {
+  res.send("Open route");
 };
 
 module.exports = {
   register,
   login,
-  getAll,
   verifyUser,
   sendPasswordReset,
   resetPassword,
   sendVerification,
+  getUser,
+  getAdmin,
+  getOpen,
+  getGoogleUrl,
+  getGoogleUserInfo,
 };
