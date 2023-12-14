@@ -57,6 +57,11 @@ const register = async (req: Request, res: Response) => {
         username: req.body.username,
         email: req.body.email,
         password: hash,
+        profile: {
+          create: {
+            name: req.body.username,
+          },
+        },
       },
     });
 

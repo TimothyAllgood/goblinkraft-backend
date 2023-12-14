@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
-
+import { v2 as cloudinary } from "cloudinary";
 const app = express();
 const cors = require("cors");
 export const prisma = new PrismaClient();
@@ -21,23 +21,30 @@ app.use(
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-app.use((req, res, next) => {
-  console.log(
-    `${req.method} ${req.url} ${new Date().toLocaleTimeString()} ${
-      res.statusCode
-    }`
-  );
-  next();
-});
+// app.use((req, res, next) => {
+//   console.log(
+//     `${req.method} ${req.url} ${new Date().toLocaleTimeString()} ${
+//       res.statusCode
+//     }`
+//   );
+//   next();
+// });
 
 async function main() {
   app.use(express.json());
 
+  cloudinary.config({
+    cloud_name: "dysoa7nbm",
+    api_key: process.env.CLOUDINARY_KEY,
+    api_secret: process.env.CLOUDINARY_SECRET,
+  });
+
   // Register API routes
-  app.use(`${BASE_URL}/users`, routes.user);
   app.use(`${BASE_URL}/campaigns`, routes.campaign);
   app.use(`${BASE_URL}/categories`, routes.category);
-  app.use(`${BASE_URL}/npc`, routes.npc);
+  app.use(`${BASE_URL}/npcs`, routes.npc);
+  app.use(`${BASE_URL}/profiles`, routes.profile);
+  app.use(`${BASE_URL}/users`, routes.user);
 
   // Catch unregistered routes
   app.all("*", (req: Request, res: Response) => {

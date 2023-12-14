@@ -16,6 +16,8 @@ model Profile {
   name   String?
   user   User    @relation(fields: [userId], references: [id])
   userId Int     @unique
+  userImageId Int? @unique
+  userImage Image?  @relation(fields: [userImageId], references: [id], onDelete: Cascade)
 }
 
 model User {
@@ -38,6 +40,8 @@ model Campaign {
   dm      User     @relation(fields: [userId], references: [id])
   userId  Int
   players Player[]
+  backgroundImageId Int? @unique
+  backgroundImage Image?  @relation(fields: [backgroundImageId], references: [id], onDelete: Cascade)
 }
 
 model Player {
@@ -67,6 +71,15 @@ model Category {
   id        Int         @id @default(autoincrement())
   name      String
   RollTable RollTable[]
+}
+
+model Image {
+   id        Int        @id @default(autoincrement())
+   url String
+   assetId String
+   publicId String?
+   campaign Campaign?
+   profile Profile?
 }
 
 enum Role {
