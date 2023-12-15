@@ -40,8 +40,26 @@ model Campaign {
   dm      User     @relation(fields: [userId], references: [id])
   userId  Int
   players Player[]
+  npcs    Npc?[]
   backgroundImageId Int? @unique
   backgroundImage Image?  @relation(fields: [backgroundImageId], references: [id], onDelete: Cascade)
+}
+
+model Npc {
+   id      Int      @id @default(autoincrement())
+   name    String
+   ideal   String?
+   bond    String?
+   flaw    String?
+   race    String?
+   job     String?
+   gender  String?
+   age     String?
+   isDead  Boolean?
+   campaignId Int @unique
+   campaign Campaign  @relation(fields: [Campaign], references: [id], onDelete: Cascade)
+   npcImageId Int? @unique
+   npcImage Image?  @relation(fields: [npcImageId], references: [id], onDelete: Cascade)
 }
 
 model Player {
@@ -80,6 +98,7 @@ model Image {
    publicId String?
    campaign Campaign?
    profile Profile?
+   npc     Npc?
 }
 
 enum Role {

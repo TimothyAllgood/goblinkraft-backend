@@ -42,6 +42,7 @@ async function main() {
   // Register API routes
   app.use(`${BASE_URL}/campaigns`, routes.campaign);
   app.use(`${BASE_URL}/categories`, routes.category);
+  app.use(`${BASE_URL}/items`, routes.item);
   app.use(`${BASE_URL}/npcs`, routes.npc);
   app.use(`${BASE_URL}/profiles`, routes.profile);
   app.use(`${BASE_URL}/users`, routes.user);

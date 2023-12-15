@@ -7,6 +7,41 @@ const ideals = require("../data/ideals.data");
 const bonds = require("../data/bonds.data");
 const flaws = require("../data/flaws.data");
 const { capitalizeFirstWord } = require("../util/string.util");
+const appearances = require("../data/npcAppearance.data");
+
+/*
+NPC Generator Structure:
+
+Name:
+Generate a random name for the NPC, considering gender variations if applicable.
+
+Occupation:
+Assign a specific job or occupation to the NPC from your extensive list.
+
+Quirk or Trait:
+Provide a distinctive quirk, habit, or trait that makes the NPC memorable.
+
+Current Activity:
+Describe what the NPC is currently doing. This adds context to their presence in the world.
+
+Appearance Detail:
+Highlight a notable physical feature or aspect of the NPC's appearance.
+
+Goal or Motivation:
+Identify a short-term goal or motivation driving the NPC.
+
+Obstacle or Challenge:
+Specify a current obstacle or challenge the NPC is facing.
+
+Relationships:
+Introduce a brief note on the NPC's relationships, whether it's family, friends, or rivals.
+
+Rumors or Gossip:
+Include a piece of gossip or rumor circulating about the NPC in the community.
+
+Possession or Item:
+Identify a significant possession or item carried by the NPC.
+*/
 
 const races = [
   "human",
@@ -37,97 +72,7 @@ const genders = [
   },
 ];
 
-const appearances = {
-  male: {
-    clothing: ["tunic", "leather armor", "noble attire"],
-    hair: {
-      l: ["short", "long", "bald"],
-      style: [
-        "straight",
-        "curly",
-        "wavy",
-        "braided",
-        "tousled",
-        "slicked back",
-      ],
-      colors: {
-        human: ["black", "brown", "blonde", "red", "white"],
-        elf: ["black", "brown", "blonde", "red", "white"],
-        dwarf: ["black", "brown", "blonde", "red", "white"],
-        gnome: ["black", "brown", "blonde", "red", "white"],
-        tiefling: ["black", "brown", "blonde", "red", "white"],
-        halfling: ["black", "brown", "blonde", "red", "white"],
-        "half-orc": ["black", "brown", "blonde", "red", "white"],
-        "half-elf": ["black", "brown", "blonde", "red", "white"],
-      },
-    },
-  },
-  female: {
-    clothing: ["dress", "chainmail", "royal robes"],
-    hair: {
-      l: ["short", "long"],
-      style: [
-        "straight",
-        "curly",
-        "wavy",
-        "braided",
-        "tousled",
-        "slicked back",
-      ],
-      colors: {
-        human: ["black", "brown", "blonde", "red", "white"],
-        elf: ["black", "brown", "blonde", "red", "white"],
-        dwarf: ["black", "brown", "blonde", "red", "white"],
-        gnome: ["black", "brown", "blonde", "red", "white"],
-        tiefling: ["black", "brown", "blonde", "red", "white"],
-        halfling: ["black", "brown", "blonde", "red", "white"],
-        "half-orc": ["black", "brown", "blonde", "red", "white"],
-        "half-elf": ["black", "brown", "blonde", "red", "white"],
-      },
-    },
-  },
-};
-
-const skinColors = {
-  human: ["pale", "fair", "olive", "tan", "brown", "dark"],
-  elf: ["pale", "fair", "alabaster", "ivory"],
-  dwarf: ["pale", "ruddy", "tan", "bronzed"],
-  gnome: ["pale", "fair", "rosy", "tan"],
-  tiefling: [
-    "crimson",
-    "ruby red",
-    "ash gray",
-    "indigo",
-    "violet",
-    "obsidian",
-    "midnight blue",
-  ],
-  halfling: ["pale", "fair", "tan", "ruddy"],
-  "half-orc": ["green", "gray", "brown", "ebony"],
-  "half-elf": [
-    "pale",
-    "fair",
-    "olive",
-    "tan",
-    "brown",
-    "dark",
-    "alabaster",
-    "ivory",
-  ],
-};
-
-// Details: Diety, alignment
-// Description: What they look like
-// Personality
-// History: Brief history of their life and story
-// Motivation
-// Plot Hook: potential story
-// Stats
-// Loot
-// Name
-// Gender Profession/Class, Age
-
-const generateNpc = async (req, res) => {
+const generateNpc = async () => {
   const seed = uuidv4();
 
   const race = getRandomElement(seed + "race", races);
@@ -147,6 +92,16 @@ const generateNpc = async (req, res) => {
     seed + "clothing",
     appearances[gender.name].clothing
   );
+
+  let facialFeature = getRandomElement(
+    seed + "facial-feature",
+    appearances[gender.name].facialFeatures
+  );
+
+  const accessory = getRandomElement(
+    seed + "accessory",
+    appearances[gender.name].accessories
+  );
   const hair = {
     length: getRandomElement(
       seed + "hair-length",
@@ -161,7 +116,10 @@ const generateNpc = async (req, res) => {
       appearances[gender.name].hair.colors[race]
     ),
   };
-  const skinColor = getRandomElement(seed + "skin-color", skinColors[race]);
+  const skinColor = getRandomElement(
+    seed + "skin-color",
+    appearances.skinColors[race]
+  );
 
   let nameRace = race;
   if (race === "half-elf") {
@@ -178,9 +136,17 @@ const generateNpc = async (req, res) => {
     allowMultipleNames: true,
   });
 
+  const hairString =
+    hair.length === "bald"
+      ? "a bald head"
+      : `${hair.length} ${hair.color} ${hair.style} hair`;
+
   const description = capitalizeFirstWord(
-    `${gender.pronouns.subject} wears a ${clothing} and has ${hair.length} ${hair.color} ${hair.style} hair. ${gender.pronouns.possessive} skin is ${skinColor}.`
+    `${gender.pronouns.subject} has ${skinColor} skin, with ${hairString} and ${facialFeature}. ${gender.pronouns.subject} wears ${clothing} and ${accessory}.`
   );
+
+  // Wilga has dark purple hair and black eyes, and rows of shark-like teeth. She wears fine raiment and jewelry. Wilga is easily distracted by arcana.
+  // Face, clothes, skin
 
   return {
     name,
