@@ -5,4 +5,5 @@ module.exports = {
   npc: require("./generators/npc.route"),
   profile: require("./profile.route"),
   user: require("./user.route"),
+  admin: require("./admin/admin.route"),
 };

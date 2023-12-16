@@ -46,6 +46,7 @@ async function main() {
   app.use(`${BASE_URL}/npcs`, routes.npc);
   app.use(`${BASE_URL}/profiles`, routes.profile);
   app.use(`${BASE_URL}/users`, routes.user);
+  app.use(`${BASE_URL}/admin`, routes.admin);
 
   // Catch unregistered routes
   app.all("*", (req: Request, res: Response) => {

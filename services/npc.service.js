@@ -8,6 +8,8 @@ const bonds = require("../data/bonds.data");
 const flaws = require("../data/flaws.data");
 const { capitalizeFirstWord } = require("../util/string.util");
 const appearances = require("../data/npcAppearance.data");
+const quirks = require("../data/npc/quirks");
+const activities = require("../data/npc/activities");
 
 /*
 NPC Generator Structure:
@@ -41,6 +43,40 @@ Include a piece of gossip or rumor circulating about the NPC in the community.
 
 Possession or Item:
 Identify a significant possession or item carried by the NPC.
+*/
+
+/*
+TODO: NPC Generator Structure
+
+√ Name:
+  Generate a random name for the NPC, considering gender variations if applicable.
+
+√ Occupation:
+  Assign a specific job or occupation to the NPC from your extensive list.
+
+- Quirk or Trait:
+  Provide a distinctive quirk, habit, or trait that makes the NPC memorable.
+
+- Current Activity:
+  Describe what the NPC is currently doing. This adds context to their presence in the world.
+
+√ Appearance Detail:
+  Highlight a notable physical feature or aspect of the NPC's appearance.
+
+- Goal or Motivation:
+  Identify a short-term goal or motivation driving the NPC.
+
+- Obstacle or Challenge:
+  Specify a current obstacle or challenge the NPC is facing.
+
+- Relationships:
+  Introduce a brief note on the NPC's relationships, whether it's family, friends, or rivals.
+
+- Rumors or Gossip:
+  Include a piece of gossip or rumor circulating about the NPC in the community.
+
+- Possession or Item:
+  Identify a significant possession or item carried by the NPC.
 */
 
 const races = [
@@ -84,9 +120,12 @@ const generateNpc = async () => {
   }
 
   const stats = getStats(seed);
-  const ideal = getRandomElement(seed + "ideal", ideals);
-  const flaw = getRandomElement(seed + "flaw", flaws);
-  const bond = getRandomElement(seed + "bond", bonds);
+  const quirk = getRandomElement(seed + "quirk", quirks);
+  const activity = getRandomElement(seed + "activity", activities);
+
+  // const ideal = getRandomElement(seed + "ideal", ideals);
+  // const flaw = getRandomElement(seed + "flaw", flaws);
+  // const bond = getRandomElement(seed + "bond", bonds);
 
   const clothing = getRandomElement(
     seed + "clothing",
@@ -152,9 +191,8 @@ const generateNpc = async () => {
     name,
     description,
     job: capitalizeFirstWord(job),
-    ideal,
-    flaw,
-    bond,
+    quirk,
+    activity,
     stats,
     race: capitalizeFirstWord(race),
   };
