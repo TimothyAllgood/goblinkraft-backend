@@ -1,7 +1,8 @@
 const { item: itemService } = require("../../services");
 
 const generateItem = async (req, res) => {
-  const item = await itemService.generateItem();
+  const { affixAmount, cursedChance } = req.body;
+  const item = await itemService.generateItem(affixAmount, cursedChance);
   res.json({
     item,
   });

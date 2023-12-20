@@ -8,6 +8,12 @@ const getRandomElement = (seed, array) => {
   return array[randomIndex];
 };
 
+const getTrueFalse = (seed, percent) => {
+  const rng = seedrandom.alea(seed);
+  const value = rng();
+  return value <= percent;
+};
+
 const getRandomDbElement = async (seed, tableName, whereClause) => {
   const ids = await prisma[tableName].findMany({
     where: {
@@ -33,4 +39,4 @@ const getRandomDbElement = async (seed, tableName, whereClause) => {
   }
 };
 
-module.exports = { getRandomElement, getRandomDbElement };
+module.exports = { getRandomElement, getTrueFalse, getRandomDbElement };
