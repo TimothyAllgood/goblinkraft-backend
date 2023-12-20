@@ -6,4 +6,8 @@ module.exports = {
   profile: require("./profile.route"),
   user: require("./user.route"),
   admin: require("./admin/admin.route"),
+  quirk: require("./admin/generatorData/quirk.route"),
+  activity: require("./admin/generatorData/activity.route"),
+  itemEffect: require("./admin/generatorData/item/itemEffect.route"),
+  itemCurse: require("./admin/generatorData/item/itemCurse.route"),
 };

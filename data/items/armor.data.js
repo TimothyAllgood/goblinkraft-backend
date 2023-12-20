@@ -282,23 +282,19 @@ const armorCurses = [
   },
 ];
 
-const armor = {
-  type: [
-    "Padded",
-    "Leather",
-    "Studded Leather",
-    "Hide",
-    "Chain Shirt",
-    "Scale Mail",
-    "Breastplate",
-    "Half Plate",
-    "Ring Mail",
-    "Chain Mail",
-    "Splint",
-    "Plate",
-  ],
-  effect: armorEffects,
-  curse: armorCurses,
-};
+const armor = [
+  "Padded Armor",
+  "Leather Armor",
+  "Studded Leather Armor",
+  "Hide Armor",
+  "Chain Shirt",
+  "Scale Mail",
+  "Breastplate",
+  "Half Plate",
+  "Ring Mail",
+  "Chain Mail",
+  "Splint Armor",
+  "Plate Armor",
+];
 
 module.exports = armor;

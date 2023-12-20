@@ -1,14 +1,10 @@
 const { v4: uuidv4 } = require("uuid");
-const getRandomElement = require("../util/random.util");
+const { getRandomElement, getRandomDbElement } = require("../util/random.util");
 const getStats = require("../util/stat.util");
 const { nameByRace } = require("fantasy-name-generator");
 const jobs = require("../data/npcJobs.data");
-const ideals = require("../data/ideals.data");
-const bonds = require("../data/bonds.data");
-const flaws = require("../data/flaws.data");
 const { capitalizeFirstWord } = require("../util/string.util");
 const appearances = require("../data/npcAppearance.data");
-const quirks = require("../data/npc/quirks");
 const activities = require("../data/npc/activities");
 
 /*
@@ -89,6 +85,7 @@ const races = [
   "half-orc",
   "half-elf",
 ];
+
 const genders = [
   {
     name: "male",
@@ -120,12 +117,8 @@ const generateNpc = async () => {
   }
 
   const stats = getStats(seed);
-  const quirk = getRandomElement(seed + "quirk", quirks);
-  const activity = getRandomElement(seed + "activity", activities);
-
-  // const ideal = getRandomElement(seed + "ideal", ideals);
-  // const flaw = getRandomElement(seed + "flaw", flaws);
-  // const bond = getRandomElement(seed + "bond", bonds);
+  const quirk = await getRandomDbElement(seed, "quirk");
+  const activity = await getRandomDbElement(seed, "activity");
 
   const clothing = getRandomElement(
     seed + "clothing",

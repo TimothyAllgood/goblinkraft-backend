@@ -9,7 +9,7 @@ const { userAuth, adminAuth } = require("../middleware/auth");
 router.post("/create", ctrl.category.create);
 router.get("/", adminAuth, ctrl.category.get);
 router.get("/:id", ctrl.category.getById);
-router.delete("/delete/:id", ctrl.category.deleteCategory);
+router.delete("/delete/:id", ctrl.category.deleteById);
 
 // exports
 module.exports = router;

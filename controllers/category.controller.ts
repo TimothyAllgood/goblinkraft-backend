@@ -40,7 +40,7 @@ const getById = async (req: Request, res: Response) => {
   }
 };
 
-const deleteCategory = async (req: Request, res: Response) => {
+const deleteById = async (req: Request, res: Response) => {
   const id: number = parseInt(req.params.id, 10);
   try {
     const categories: Category[] = await prisma.category.delete({
@@ -58,5 +58,5 @@ module.exports = {
   create,
   get,
   getById,
-  deleteCategory,
+  deleteById,
 };

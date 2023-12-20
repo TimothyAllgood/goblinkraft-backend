@@ -47,6 +47,10 @@ async function main() {
   app.use(`${BASE_URL}/profiles`, routes.profile);
   app.use(`${BASE_URL}/users`, routes.user);
   app.use(`${BASE_URL}/admin`, routes.admin);
+  app.use(`${BASE_URL}/quirks`, routes.quirk);
+  app.use(`${BASE_URL}/activities`, routes.activity);
+  app.use(`${BASE_URL}/items/effects`, routes.itemEffect);
+  app.use(`${BASE_URL}/items/curses`, routes.itemCurse);
 
   // Catch unregistered routes
   app.all("*", (req: Request, res: Response) => {
