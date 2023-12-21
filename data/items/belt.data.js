@@ -1,3 +1,3 @@
-const belt = ["Belt", "Girdle"];
+const belt = ["Belt", "Girdle", "Sash", "Waistband"];
 
 module.exports = belt;

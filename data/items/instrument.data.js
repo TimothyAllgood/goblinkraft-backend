@@ -6,6 +6,12 @@ const instrument = [
   "Harp",
   "Violin",
   "Horn",
+  "Clarinet",
+  "Bagpipes",
+  "Ocarina",
+  "Lyre",
+  "Mandolin",
+  "Accordion",
 ];
 
 module.exports = instrument;

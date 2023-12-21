@@ -1,3 +1,3 @@
-const boots = ["Boots", "Shoes", "Socks"];
+const boots = ["Boots", "Shoes", "Socks", "Sandals", "Slippers"];
 
 module.exports = boots;

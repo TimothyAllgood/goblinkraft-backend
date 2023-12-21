@@ -39,7 +39,7 @@ const generateItem = async (affixAmount = 1, cursedChance = 0.1) => {
     ? await getRandomDbElement(seed, "itemCurse")
     : undefined;
 
-  return { type, effects, curse };
+  return { itemType, type, effects, curse };
 };
 
 module.exports = {
