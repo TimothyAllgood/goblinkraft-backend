@@ -42,17 +42,29 @@ async function main() {
   // Register API routes
   app.use(`${BASE_URL}/campaigns`, routes.campaign);
   app.use(`${BASE_URL}/categories`, routes.category);
+  // Generators
   app.use(`${BASE_URL}/items`, routes.item);
   app.use(`${BASE_URL}/npcs`, routes.npc);
   app.use(`${BASE_URL}/plothooks`, routes.plotHook);
+  // User
   app.use(`${BASE_URL}/profiles`, routes.profile);
   app.use(`${BASE_URL}/users`, routes.user);
+  // Admin
   app.use(`${BASE_URL}/admin`, routes.admin);
+  // NPCs
   app.use(`${BASE_URL}/quirks`, routes.quirk);
   app.use(`${BASE_URL}/activities`, routes.activity);
+  // Items
   app.use(`${BASE_URL}/items/effects`, routes.itemEffect);
   app.use(`${BASE_URL}/items/curses`, routes.itemCurse);
+  // Plot Hooks
   app.use(`${BASE_URL}/plothooks/data`, routes.plotHookData);
+  // Tavern
+  app.use(`${BASE_URL}/tavern/menu-items`, routes.menuItem);
+  app.use(`${BASE_URL}/tavern/atmospheres`, routes.tavernAtmosphere);
+  app.use(`${BASE_URL}/tavern/events`, routes.tavernEvent);
+  app.use(`${BASE_URL}/tavern/features`, routes.tavernFeature);
+  app.use(`${BASE_URL}/tavern/rumors`, routes.tavernRumor);
 
   // Catch unregistered routes
   app.all("*", (req: Request, res: Response) => {

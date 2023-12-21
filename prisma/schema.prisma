@@ -122,6 +122,43 @@ model PlotHook {
   type      String @default("npc")
 }
 
+model TavernRumor {
+  id        Int        @id @default(autoincrement())
+  name      String
+}
+
+model TavernAtmosphere {
+  id        Int        @id @default(autoincrement())
+  name      String
+  info      String
+  quality   String @default("squalid")
+}
+
+model TavernFeature {
+  id        Int        @id @default(autoincrement())
+  name      String
+  info      String
+  quality   String @default("squalid")
+  type      String?
+}
+
+model TavernEvent {
+  id        Int        @id @default(autoincrement())
+  name      String
+  info      String
+  quality   String @default("squalid")
+  type      String?
+}
+
+model MenuItem {
+  id        Int        @id @default(autoincrement())
+  name      String
+  description String
+  price String
+  type      String @default("food")
+  quality   String @default("common")
+}
+
 enum Role {
   USER
   MODERATOR
