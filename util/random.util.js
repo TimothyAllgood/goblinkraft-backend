@@ -21,13 +21,14 @@ const getRandomDbElement = async (
   genericWhereClause,
   typeWhereClause
 ) => {
-  const or = [
-    whereClause?.field ? { [whereClause.field]: whereClause.value } : {},
-    genericWhereClause?.field
-      ? { [genericWhereClause.field]: genericWhereClause.value }
-      : {},
-  ];
+  const or = [];
 
+  if (whereClause?.field) {
+    or.push({ [whereClause.field]: whereClause.value });
+  }
+  if (genericWhereClause?.field) {
+    or.push({ [genericWhereClause.field]: genericWhereClause.value });
+  }
   if (typeWhereClause?.length > 0) {
     or.push(...typeWhereClause);
   }
@@ -35,7 +36,7 @@ const getRandomDbElement = async (
   console.log(or);
   const ids = await prisma[tableName].findMany({
     where: {
-      OR: or,
+      ...(or.length > 0 ? { OR: or } : {}),
     },
 
     select: { id: true },
