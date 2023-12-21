@@ -14,11 +14,30 @@ const getTrueFalse = (seed, percent) => {
   return value <= percent;
 };
 
-const getRandomDbElement = async (seed, tableName, whereClause) => {
+const getRandomDbElement = async (
+  seed,
+  tableName,
+  whereClause,
+  genericWhereClause,
+  typeWhereClause
+) => {
+  const or = [
+    whereClause?.field ? { [whereClause.field]: whereClause.value } : {},
+    genericWhereClause?.field
+      ? { [genericWhereClause.field]: genericWhereClause.value }
+      : {},
+  ];
+
+  if (typeWhereClause?.length > 0) {
+    or.push(...typeWhereClause);
+  }
+
+  console.log(or);
   const ids = await prisma[tableName].findMany({
     where: {
-      ...(whereClause?.field ? { [whereClause.field]: whereClause.value } : {}),
+      OR: or,
     },
+
     select: { id: true },
   });
 
@@ -27,9 +46,6 @@ const getRandomDbElement = async (seed, tableName, whereClause) => {
     const element = await prisma[tableName].findUnique({
       where: {
         id,
-        ...(whereClause?.field
-          ? { [whereClause.field]: whereClause.value }
-          : {}),
       },
     });
     return element;

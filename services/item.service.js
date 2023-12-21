@@ -11,11 +11,26 @@ const generateItem = async (affixAmount = 1, cursedChance = 0.1) => {
   const itemType = getRandomElement(seed + "itemType", itemData.itemType);
   const type = getRandomElement(seed + "type", itemData[itemType]);
   let effects = [];
+  let categories = itemData.categories;
+  categories = Object.keys(categories).filter((category) => {
+    if (categories[category].includes(itemType)) {
+      return category;
+    }
+  });
+  const categoryFields = categories.map((category) => {
+    return { ["itemType"]: category };
+  });
   for (let i = 0; i < affixAmount; i++) {
-    const effect = await getRandomDbElement(seed + i, "itemEffect", {
-      field: "itemType",
-      value: itemType,
-    });
+    const effect = await getRandomDbElement(
+      seed + i,
+      "itemEffect",
+      {
+        field: "itemType",
+        value: itemType,
+      },
+      { field: "itemType", value: "generic" },
+      categoryFields
+    );
     effects.push(effect);
   }
 
