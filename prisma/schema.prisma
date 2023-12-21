@@ -115,6 +115,13 @@ model ItemCurse {
   severity      Severity @default(MINOR)
 }
 
+model PlotHook {
+  id        Int        @id @default(autoincrement())
+  name      String
+  description String
+  type      String @default("npc")
+}
+
 enum Role {
   USER
   MODERATOR

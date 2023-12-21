@@ -5,7 +5,7 @@ const { nameByRace } = require("fantasy-name-generator");
 const jobs = require("../data/npcJobs.data");
 const { capitalizeFirstWord } = require("../util/string.util");
 const appearances = require("../data/npcAppearance.data");
-const activities = require("../data/npc/activities");
+const plotHook = require("../services/plotHook.service");
 
 /*
 NPC Generator Structure:
@@ -119,6 +119,7 @@ const generateNpc = async () => {
   const stats = getStats(seed);
   const quirk = await getRandomDbElement(seed, "quirk");
   const activity = await getRandomDbElement(seed, "activity");
+  const hook = await plotHook.generatePlotHook("npc");
 
   const clothing = getRandomElement(
     seed + "clothing",
@@ -188,6 +189,7 @@ const generateNpc = async () => {
     activity,
     stats,
     race: capitalizeFirstWord(race),
+    hook,
   };
 };
 

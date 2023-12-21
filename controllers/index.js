@@ -3,6 +3,7 @@ module.exports = {
   campaign: require("./campaign.controller"),
   item: require("./generators/item.controller"),
   npc: require("./generators/npc.controller"),
+  plotHook: require("./generators/plotHook.controller"),
   profile: require("./profile.controller"),
   user: require("./user.controller"),
   // Admin Controllers
@@ -11,4 +12,5 @@ module.exports = {
   activity: require("./admin/generatorData/activity.controller"),
   itemEffect: require("./admin/generatorData/item/itemEffect.controller"),
   itemCurse: require("./admin/generatorData/item/itemCurse.controller"),
+  plotHookData: require("./admin/generatorData/plotHookData/plotHookData.controller"),
 };

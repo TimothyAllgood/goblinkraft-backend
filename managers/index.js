@@ -3,4 +3,5 @@ module.exports = {
   activity: require("./admin/generatorData/activity.manager"),
   itemEffect: require("./admin/generatorData/item/itemEffect.manager"),
   itemCurse: require("./admin/generatorData/item/itemCurse.manager"),
+  plotHookData: require("./admin/generatorData/plotHookData/plotHookData.manager"),
 };

@@ -3,6 +3,7 @@ module.exports = {
   category: require("./category.route"),
   item: require("./generators/item.route"),
   npc: require("./generators/npc.route"),
+  plotHook: require("./generators/plotHook.route"),
   profile: require("./profile.route"),
   user: require("./user.route"),
   admin: require("./admin/admin.route"),
@@ -10,4 +11,5 @@ module.exports = {
   activity: require("./admin/generatorData/activity.route"),
   itemEffect: require("./admin/generatorData/item/itemEffect.route"),
   itemCurse: require("./admin/generatorData/item/itemCurse.route"),
+  plotHookData: require("./admin/generatorData/plotHookData/plotHookData.route"),
 };

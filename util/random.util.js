@@ -33,7 +33,6 @@ const getRandomDbElement = async (
     or.push(...typeWhereClause);
   }
 
-  console.log(or);
   const ids = await prisma[tableName].findMany({
     where: {
       ...(or.length > 0 ? { OR: or } : {}),
