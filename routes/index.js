@@ -1,9 +1,12 @@
 module.exports = {
   campaign: require("./campaign.route"),
   category: require("./category.route"),
+  // Generators
   item: require("./generators/item.route"),
   npc: require("./generators/npc.route"),
   plotHook: require("./generators/plotHook.route"),
+  tavern: require("./generators/tavern.route"),
+  // User
   profile: require("./profile.route"),
   user: require("./user.route"),
   // Admin

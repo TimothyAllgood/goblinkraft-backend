@@ -46,6 +46,7 @@ async function main() {
   app.use(`${BASE_URL}/items`, routes.item);
   app.use(`${BASE_URL}/npcs`, routes.npc);
   app.use(`${BASE_URL}/plothooks`, routes.plotHook);
+  app.use(`${BASE_URL}/taverns`, routes.tavern);
   // User
   app.use(`${BASE_URL}/profiles`, routes.profile);
   app.use(`${BASE_URL}/users`, routes.user);

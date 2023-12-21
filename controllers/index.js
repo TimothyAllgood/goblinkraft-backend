@@ -1,9 +1,12 @@
 module.exports = {
   category: require("./category.controller"),
   campaign: require("./campaign.controller"),
+  // Generators
   item: require("./generators/item.controller"),
   npc: require("./generators/npc.controller"),
   plotHook: require("./generators/plotHook.controller"),
+  tavern: require("./generators/tavern.controller"),
+  // User
   profile: require("./profile.controller"),
   user: require("./user.controller"),
   // Admin Controllers

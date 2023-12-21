@@ -14,12 +14,21 @@ const getTrueFalse = (seed, percent) => {
   return value <= percent;
 };
 
+const getRandomPercent = (seed, minPercent = 0, maxPercent) => {
+  const rng = seedrandom.alea(seed);
+  const randomDecimal = rng(); // Generates a number between 0 and 1
+  const range = maxPercent - minPercent;
+  const percent = minPercent + randomDecimal * range; // Scale it to maxPercent
+  return percent / 100;
+};
+
 const getRandomDbElement = async (
   seed,
   tableName,
-  whereClause,
-  genericWhereClause,
-  typeWhereClause
+  whereClause = {},
+  genericWhereClause = {},
+  typeWhereClause = [],
+  andClause = {}
 ) => {
   const or = [];
 
@@ -33,9 +42,14 @@ const getRandomDbElement = async (
     or.push(...typeWhereClause);
   }
 
+  let and = {};
+  if (andClause) {
+    and = [{ [andClause.field]: andClause.value }];
+  }
+
   const ids = await prisma[tableName].findMany({
     where: {
-      ...(or.length > 0 ? { OR: or } : {}),
+      ...(or.length > 0 ? { OR: or, AND: and } : {}),
     },
 
     select: { id: true },
@@ -55,4 +69,9 @@ const getRandomDbElement = async (
   }
 };
 
-module.exports = { getRandomElement, getTrueFalse, getRandomDbElement };
+module.exports = {
+  getRandomElement,
+  getTrueFalse,
+  getRandomPercent,
+  getRandomDbElement,
+};
