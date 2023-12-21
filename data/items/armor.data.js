@@ -295,6 +295,12 @@ const armor = [
   "Chain Mail",
   "Splint Armor",
   "Plate Armor",
+  //Unofficial
+  "Gambeson",
+  "Brigandine",
+  "Lamellar Armor",
+  "Cuirass",
+  "Banded Mail",
 ];
 
 module.exports = armor;
