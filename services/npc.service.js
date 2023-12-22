@@ -105,13 +105,13 @@ const genders = [
   },
 ];
 
-const generateNpc = async () => {
-  const seed = uuidv4();
+const generateNpc = async (initialSeed, assignedJob) => {
+  const seed = initialSeed || uuidv4();
 
   const race = getRandomElement(seed + "race", races);
   const gender = getRandomElement(seed + "gender", genders);
 
-  let job = getRandomElement(seed + "job", jobs);
+  let job = assignedJob || getRandomElement(seed + "job", jobs);
   if (job.male || job.female) {
     job = job[gender.name];
   }

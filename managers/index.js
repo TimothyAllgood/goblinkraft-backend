@@ -13,4 +13,6 @@ module.exports = {
   tavernEvent: require("./admin/generatorData/tavern/tavernEvent.manager"),
   tavernFeature: require("./admin/generatorData/tavern/tavernFeature.manager"),
   tavernRumor: require("./admin/generatorData/tavern/tavernRumor.manager"),
+  // Monster
+  monsterAbility: require("./admin/generatorData/monster/monsterAbility.manager"),
 };

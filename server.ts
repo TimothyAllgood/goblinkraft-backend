@@ -66,6 +66,8 @@ async function main() {
   app.use(`${BASE_URL}/tavern/events`, routes.tavernEvent);
   app.use(`${BASE_URL}/tavern/features`, routes.tavernFeature);
   app.use(`${BASE_URL}/tavern/rumors`, routes.tavernRumor);
+  // Monster
+  app.use(`${BASE_URL}/monsters/abilities`, routes.monsterAbility);
 
   // Catch unregistered routes
   app.all("*", (req: Request, res: Response) => {

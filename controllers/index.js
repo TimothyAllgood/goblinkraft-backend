@@ -25,4 +25,6 @@ module.exports = {
   tavernEvent: require("./admin/generatorData/tavern/tavernEvent.controller"),
   tavernFeature: require("./admin/generatorData/tavern/tavernFeature.controller"),
   tavernRumor: require("./admin/generatorData/tavern/tavernRumor.controller"),
+  // Monster
+  monsterAbility: require("./admin/generatorData/monster/monsterAbility.controller"),
 };

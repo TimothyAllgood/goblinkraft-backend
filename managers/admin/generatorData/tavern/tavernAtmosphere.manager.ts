@@ -20,6 +20,7 @@ const createMany = async (data: TavernAtmosphere[]) => {
     const newTavernAtmospheres: TavernAtmosphere[] =
       await prisma.tavernAtmosphere.createMany({
         data,
+        skipDuplicates: true,
       });
     return newTavernAtmospheres;
   } catch (error: any) {

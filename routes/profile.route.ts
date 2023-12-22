@@ -6,6 +6,7 @@ const { userAuth, adminAuth } = require("../middleware/auth");
 
 // Current Path = '/api/v1/profiles'
 
-router.get("/:id", userAuth, ctrl.profile.getProfileById);
+router.get("/:id", ctrl.profile.getProfileById);
+router.post("/:id", ctrl.profile.updateProfile);
 // exports
 module.exports = router;

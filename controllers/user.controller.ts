@@ -58,9 +58,7 @@ const register = async (req: Request, res: Response) => {
         email: req.body.email,
         password: hash,
         profile: {
-          create: {
-            name: req.body.username,
-          },
+          create: { firstName: req.body.username },
         },
       },
     });
@@ -327,6 +325,9 @@ const getGoogleUserInfo = async (req: Request, res: Response) => {
         username: data.name,
         type: "google",
         verified: true,
+        profile: {
+          create: { firstName: data.name },
+        },
       };
 
       let newUser = await prisma.user.create({

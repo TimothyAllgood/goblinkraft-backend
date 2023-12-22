@@ -25,4 +25,6 @@ module.exports = {
   tavernEvent: require("./admin/generatorData/tavern/tavernEvent.route"),
   tavernFeature: require("./admin/generatorData/tavern/tavernFeature.route"),
   tavernRumor: require("./admin/generatorData/tavern/tavernRumor.route"),
+  // Monster
+  monsterAbility: require("./admin/generatorData/monster/monsterAbility.route"),
 };

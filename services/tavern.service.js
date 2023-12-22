@@ -5,6 +5,8 @@ const {
   getTrueFalse,
   getRandomPercent,
 } = require("../util/random.util");
+const { generateName } = require("../util/tavern.util");
+const { generateNpc } = require("./npc.service");
 
 const qualities = [
   "squalid",
@@ -18,6 +20,7 @@ const qualities = [
 
 const generateTavern = async (q) => {
   const seed = uuidv4();
+  const name = generateName(seed);
   const quality = q || getRandomElement(seed + "quality", qualities);
 
   const whereClause = {
@@ -197,13 +200,25 @@ const generateTavern = async (q) => {
   );
   const tavernRumor = await getRandomDbElement(seed, "tavernRumor");
 
+  const barTender = await generateNpc(null, "Bartender");
+
+  const patrons = [];
+
+  for (let i = 0; i < 2; i++) {
+    const patron = await generateNpc();
+    patrons.push(patron);
+  }
+
   return {
+    name,
     quality,
     menu,
     tavernAtmosphere,
     tavernEvent,
     tavernFeature,
     tavernRumor,
+    barTender,
+    patrons,
   };
 };
 

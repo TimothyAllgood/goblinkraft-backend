@@ -1,8 +1,9 @@
-import { Profile } from "@prisma/client";
+import { Profile, User } from "@prisma/client";
 import { Request, Response } from "express";
 
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
+const jwt = require("jsonwebtoken");
 
 // Create a new profile
 exports.createProfile = async (req: Request, res: Response) => {
@@ -31,7 +32,9 @@ exports.getAllProfiles = async (req: Request, res: Response) => {
 exports.getProfileById = async (req: Request, res: Response) => {
   const id: number = parseInt(req.params.id);
   try {
-    const profile: Profile = await prisma.profile.findUnique({ where: { id } });
+    const profile: Profile = await prisma.profile.findUnique({
+      where: { userId: id },
+    });
     if (profile) {
       res.json(profile);
     } else {
@@ -45,13 +48,51 @@ exports.getProfileById = async (req: Request, res: Response) => {
 // Update a profile
 exports.updateProfile = async (req: Request, res: Response) => {
   const id: number = parseInt(req.params.id);
-  const { bio, name }: { bio: string | null; name: string | null } = req.body;
+  const {
+    bio,
+    firstName,
+    lastName,
+    username,
+    userId,
+  }: {
+    bio: string | null;
+    firstName: string;
+    lastName: string | null;
+    username: string | null;
+    userId: number | null;
+  } = req.body;
   try {
     const updatedProfile: Profile = await prisma.profile.update({
       where: { id },
-      data: { bio, name },
+      data: { bio, firstName, lastName },
     });
-    res.json(updatedProfile);
+
+    let token;
+
+    if (username) {
+      let updatedUser: User = await prisma.user.update({
+        where: { id: userId },
+        data: { username },
+      });
+
+      if (updatedUser) {
+        // CREATE TOKEN PAYLOAD
+        const payload = {
+          id: updatedUser.id,
+          username: updatedUser.username,
+          role: updatedUser.role,
+          subscribed: updatedUser.subscribed,
+          subscription: updatedUser.subscription,
+        };
+        const secret = process.env.SECRET;
+        const expiration = { expiresIn: "160000s" };
+
+        // SIGN TOKEN
+        token = await jwt.sign(payload, secret, expiration);
+      }
+    }
+
+    res.json({ updatedProfile, token });
   } catch (error: any) {
     res.status(400).json({ error: error.message });
   }
