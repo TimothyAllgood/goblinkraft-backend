@@ -12,6 +12,9 @@ router.post("/update-image", multer, ctrl.campaign.updateImage);
 router.get("/", ctrl.campaign.getByUserId);
 router.get("/:id", ctrl.campaign.getById);
 router.delete("/delete/:id", userAuth, ctrl.campaign.deleteCampaign);
+router.get("/npcs/getall/:id", ctrl.campaign.getNPCS);
+router.get("/npcs/get/:id", ctrl.campaign.getNPC);
+router.post("/npcs/upsert", ctrl.campaign.upsertNPC);
 
 // exports
 module.exports = router;

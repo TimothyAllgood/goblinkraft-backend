@@ -7,7 +7,7 @@ const { userAuth, adminAuth } = require("../../middleware/auth");
 
 // Current Path = '/api/v1/npc'
 
-router.get("/", ctrl.npc.generateNpc);
-router.get("/generate-npcs", ctrl.npc.generateNpcs);
+router.post("/", ctrl.npc.generateNpc);
+router.post("/generate-npcs", ctrl.npc.generateNpcs);
 // exports
 module.exports = router;

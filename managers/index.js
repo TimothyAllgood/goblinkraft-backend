@@ -1,4 +1,15 @@
 module.exports = {
+  // Character
+  backstory: require("./admin/generatorData/character/backstory.manager"),
+  characterClass: require("./admin/generatorData/character/characterClass.manager"),
+  race: require("./admin/generatorData/character/race.manager"),
+  author: require("./admin/generatorData/character/author.manager"),
+  characterTrait: require("./admin/generatorData/character/characterTrait.manager"),
+  classTrait: require("./admin/generatorData/character/classTrait.manager"),
+  culture: require("./admin/generatorData/character/culture.manager"),
+  locale: require("./admin/generatorData/character/locale.manager"),
+  origin: require("./admin/generatorData/character/origin.manager"),
+  tone: require("./admin/generatorData/character/tone.manager"),
   // Npcs
   quirk: require("./admin/generatorData/quirk.manager"),
   activity: require("./admin/generatorData/activity.manager"),
@@ -14,5 +25,6 @@ module.exports = {
   tavernFeature: require("./admin/generatorData/tavern/tavernFeature.manager"),
   tavernRumor: require("./admin/generatorData/tavern/tavernRumor.manager"),
   // Monster
+  monster: require("./admin/generatorData/monster/monster.manager"),
   monsterAbility: require("./admin/generatorData/monster/monsterAbility.manager"),
 };

@@ -407,4 +407,9 @@ const parseColonArray = (items, fields) => {
   });
 };
 
-module.exports = parseColonArray;
+const parseJson = (json) => {
+  console.log(json);
+  return json;
+};
+
+module.exports = { parseColonArray, parseJson };

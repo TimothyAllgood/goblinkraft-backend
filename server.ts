@@ -18,8 +18,8 @@ app.use(
   })
 );
 
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
+app.use(express.urlencoded({ extended: false, limit: "50mb" }));
+app.use(express.json({ limit: "50mb" }));
 
 // app.use((req, res, next) => {
 //   console.log(
@@ -43,15 +43,29 @@ async function main() {
   app.use(`${BASE_URL}/campaigns`, routes.campaign);
   app.use(`${BASE_URL}/categories`, routes.category);
   // Generators
+  app.use(`${BASE_URL}/characters`, routes.character);
   app.use(`${BASE_URL}/items`, routes.item);
+  app.use(`${BASE_URL}/monsters`, routes.monster);
   app.use(`${BASE_URL}/npcs`, routes.npc);
   app.use(`${BASE_URL}/plothooks`, routes.plotHook);
   app.use(`${BASE_URL}/taverns`, routes.tavern);
+  app.use(`${BASE_URL}/towns`, routes.town);
   // User
   app.use(`${BASE_URL}/profiles`, routes.profile);
   app.use(`${BASE_URL}/users`, routes.user);
   // Admin
   app.use(`${BASE_URL}/admin`, routes.admin);
+  // Characters
+  app.use(`${BASE_URL}/backstories/data`, routes.backstory);
+  app.use(`${BASE_URL}/characterClasses/data`, routes.characterClass);
+  app.use(`${BASE_URL}/races/data`, routes.race);
+  app.use(`${BASE_URL}/authors/data`, routes.author);
+  app.use(`${BASE_URL}/characterTraits/data`, routes.characterTrait);
+  app.use(`${BASE_URL}/classTraits/data`, routes.classTrait);
+  app.use(`${BASE_URL}/cultures/data`, routes.culture);
+  app.use(`${BASE_URL}/locales/data`, routes.locale);
+  app.use(`${BASE_URL}/origins/data`, routes.origin);
+  app.use(`${BASE_URL}/tones/data`, routes.tone);
   // NPCs
   app.use(`${BASE_URL}/quirks`, routes.quirk);
   app.use(`${BASE_URL}/activities`, routes.activity);
@@ -67,6 +81,7 @@ async function main() {
   app.use(`${BASE_URL}/tavern/features`, routes.tavernFeature);
   app.use(`${BASE_URL}/tavern/rumors`, routes.tavernRumor);
   // Monster
+  app.use(`${BASE_URL}/monsters/data`, routes.monsterData);
   app.use(`${BASE_URL}/monsters/abilities`, routes.monsterAbility);
 
   // Catch unregistered routes

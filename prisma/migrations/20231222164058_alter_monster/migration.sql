@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "Monster" ALTER COLUMN "cr" SET DATA TYPE DECIMAL(6,3);
+
+-- AlterTable
+ALTER TABLE "MonsterAbility" ALTER COLUMN "cr" SET DATA TYPE DECIMAL(6,3);

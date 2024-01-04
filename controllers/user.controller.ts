@@ -86,8 +86,9 @@ const register = async (req: Request, res: Response) => {
 const login = async (req: Request, res: Response) => {
   try {
     // FIND USER BY USERNAME
-    const foundUser: User | null = await prisma.user.findUnique({
+    const foundUser: any | null = await prisma.user.findUnique({
       where: { username: req.body.username },
+      include: { profile: true },
     });
 
     if (!foundUser) {
@@ -123,6 +124,7 @@ const login = async (req: Request, res: Response) => {
       role: foundUser.role,
       subscribed: foundUser.subscribed,
       subscription: foundUser.subscription,
+      colorScheme: foundUser.profile.colorScheme,
     };
     const secret = process.env.SECRET;
     const expiration = { expiresIn: "160000s" };
@@ -270,9 +272,12 @@ const getGoogleUserInfo = async (req: Request, res: Response) => {
       },
     });
 
-    const foundEmail: User | null = await prisma.user.findUnique({
+    const foundEmail: any | null = await prisma.user.findUnique({
       where: { email: data.email },
+      include: { profile: true },
     });
+
+    console.log(foundEmail);
 
     if (foundEmail && foundEmail.type !== "google") {
       await prisma.user.update({
@@ -307,6 +312,7 @@ const getGoogleUserInfo = async (req: Request, res: Response) => {
         role: foundEmail.role,
         subscribed: foundEmail.subscribed,
         subscription: foundEmail.subscription,
+        colorScheme: foundEmail.profile.colorScheme,
       };
       const secret = process.env.SECRET;
       const expiration = { expiresIn: "160000s" };

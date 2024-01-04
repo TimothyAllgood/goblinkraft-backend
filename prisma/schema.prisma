@@ -19,6 +19,7 @@ model Profile {
   userId Int     @unique
   userImageId Int? @unique
   userImage Image?  @relation(fields: [userImageId], references: [id], onDelete: Cascade)
+  colorScheme String? @default("goblinmode")
 }
 
 model User {
@@ -43,6 +44,14 @@ model Campaign {
   players Player[]
   backgroundImageId Int? @unique
   backgroundImage Image?  @relation(fields: [backgroundImageId], references: [id], onDelete: Cascade)
+  npcs NPC[]
+}
+
+model NPC {
+  id      Int      @id @default(autoincrement())
+  name    String?
+  campaignId Int 
+  campaign Campaign  @relation(fields: [campaignId], references: [id], onDelete: Cascade)
 }
 
 model Quirk {
@@ -102,8 +111,8 @@ model Image {
 
 model ItemEffect {
   id        Int        @id @default(autoincrement())
-  name      String @unique
-  description String @unique
+  name      String 
+  description String 
   itemType    String
   affixType   String
   rarity      Rarity @default(COMMON)
@@ -137,16 +146,16 @@ model TavernAtmosphere {
 
 model TavernFeature {
   id        Int        @id @default(autoincrement())
-  name      String @unique
-  info      String @unique
+  name      String 
+  info      String 
   quality   String @default("squalid")
   type      String?
 }
 
 model TavernEvent {
   id        Int        @id @default(autoincrement())
-  name      String @unique
-  info      String @unique
+  name      String 
+  info      String 
   quality   String @default("squalid")
   type      String?
 }
@@ -165,8 +174,105 @@ model MonsterAbility {
   affix      String @unique
   description String @unique
   weight String @default("common")
-  cr  Decimal @db.Decimal(2,1)
+  cr  Decimal @db.Decimal(6,3)
 }
+
+model Monster {
+  id        Int        @id @default(autoincrement())
+  name      String     
+  source   String               
+  sourcePage String?
+  link     String?
+  type     String 
+  alignment  String             
+  cr                       Decimal? @db.Decimal(6,3)
+  environment              String?
+}
+
+model CharacterClass {
+  id        Int        @id @default(autoincrement())
+  name      String     
+  backstory Backstory[]
+  classTrait ClassTrait[]
+}
+
+model Race {
+  id        Int        @id @default(autoincrement())
+  name      String     
+  backstory Backstory[]
+}
+
+model Backstory {
+   id        Int        @id @default(autoincrement())
+   title      String     
+   summary String
+   alignment String?
+   concept String?
+   characterClass   CharacterClass? @relation(fields: [characterClassId], references: [id])
+   characterClassId Int?    
+   race   Race? @relation(fields: [raceId], references: [id])
+   raceId Int?
+}
+
+model Trap{
+  id        Int        @id @default(autoincrement())
+  name      String 
+  description String 
+}
+
+model CombatDescription {
+  id        Int        @id @default(autoincrement())
+  attackType  String? 
+  description String?
+}
+
+model CharacterTrait { 
+    id        Int        @id @default(autoincrement())
+    question  String
+    hint      String
+    answers   String[]
+}
+
+model ClassTrait { 
+    id        Int        @id @default(autoincrement())
+    name  String
+    question  String
+    hint      String?
+    answers   String[]
+    characterClass   CharacterClass @relation(fields: [characterClassId], references: [id])
+    characterClassId Int
+}
+
+model Origin { 
+    id        Int        @id @default(autoincrement())
+    name  String
+    description      String?
+}
+
+model Culture { 
+    id        Int        @id @default(autoincrement())
+    name  String
+    description      String?
+}
+
+model Locale { 
+    id        Int        @id @default(autoincrement())
+    name  String
+    description      String?
+}
+
+model Tone { 
+    id        Int        @id @default(autoincrement())
+    name  String
+    description      String?
+}
+
+model Author { 
+    id        Int        @id @default(autoincrement())
+    name  String
+    hint      String?
+}
+
 
 enum Role {
   USER

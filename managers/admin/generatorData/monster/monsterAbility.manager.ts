@@ -5,12 +5,15 @@ const prisma = new PrismaClient();
 
 const create = async (body: MonsterAbility) => {
   try {
+    console.log(body);
     const newMonsterAbility: MonsterAbility =
       await prisma.monsterAbility.create({
         data: body,
       });
     return newMonsterAbility;
   } catch (error: any) {
+    console.log(body);
+    console.log(error);
     return error;
   }
 };

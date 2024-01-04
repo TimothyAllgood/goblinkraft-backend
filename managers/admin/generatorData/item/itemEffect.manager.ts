@@ -21,8 +21,19 @@ const createMany = async (data: ItemEffect[]) => {
     });
     return newItemEffects;
   } catch (error: any) {
+    const itemEffects: ItemEffect[] = await prisma.itemEffect.findMany({
+      select: { name: true },
+    });
+    const dupes: any = [];
+    data.forEach((item) => {
+      itemEffects.filter((ie) => {
+        if (ie.name === item.name) {
+          dupes.push(ie.name);
+        }
+      });
+    });
     console.log(error);
-    return error;
+    return dupes;
   }
 };
 

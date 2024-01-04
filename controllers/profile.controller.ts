@@ -54,25 +54,50 @@ exports.updateProfile = async (req: Request, res: Response) => {
     lastName,
     username,
     userId,
+    colorScheme,
   }: {
     bio: string | null;
     firstName: string;
     lastName: string | null;
     username: string | null;
     userId: number | null;
+    colorScheme: string | null;
   } = req.body;
   try {
     const updatedProfile: Profile = await prisma.profile.update({
       where: { id },
-      data: { bio, firstName, lastName },
+      data: { bio, firstName, lastName, colorScheme },
     });
 
     let token;
 
+    if (updatedProfile && !username) {
+      let foundUser: any = await prisma.user.findUnique({
+        where: { id: userId },
+        include: { profile: { select: { colorScheme: true } } },
+      });
+      // CREATE TOKEN PAYLOAD
+      const payload = {
+        id: foundUser.id,
+        username: foundUser.username,
+        role: foundUser.role,
+        subscribed: foundUser.subscribed,
+        subscription: foundUser.subscription,
+        colorScheme: foundUser.profile.colorScheme,
+      };
+      const secret = process.env.SECRET;
+      const expiration = { expiresIn: "160000s" };
+
+      // SIGN TOKEN
+      token = await jwt.sign(payload, secret, expiration);
+      return res.status(200).json({ updatedProfile, token });
+    }
+
     if (username) {
-      let updatedUser: User = await prisma.user.update({
+      let updatedUser: any = await prisma.user.update({
         where: { id: userId },
         data: { username },
+        include: { profile: { select: { colorScheme: true } } },
       });
 
       if (updatedUser) {
@@ -83,16 +108,18 @@ exports.updateProfile = async (req: Request, res: Response) => {
           role: updatedUser.role,
           subscribed: updatedUser.subscribed,
           subscription: updatedUser.subscription,
+          colorScheme: updatedUser.profile.colorScheme,
         };
         const secret = process.env.SECRET;
         const expiration = { expiresIn: "160000s" };
 
         // SIGN TOKEN
         token = await jwt.sign(payload, secret, expiration);
+        return res.status(200).json({ updatedProfile, token });
       }
     }
 
-    res.json({ updatedProfile, token });
+    return res.json({ updatedProfile });
   } catch (error: any) {
     res.status(400).json({ error: error.message });
   }

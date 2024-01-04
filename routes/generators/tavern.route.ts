@@ -5,7 +5,7 @@ const router = express.Router();
 const ctrl = require("../../controllers");
 const { userAuth, adminAuth } = require("../../middleware/auth");
 
-// Current Path = '/api/v1/items'
+// Current Path = '/api/v1/taverns'
 
 router.post("/", ctrl.tavern.generateTavern);
 // exports

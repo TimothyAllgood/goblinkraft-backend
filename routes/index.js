@@ -2,10 +2,13 @@ module.exports = {
   campaign: require("./campaign.route"),
   category: require("./category.route"),
   // Generators
+  character: require("./generators/character.route"),
   item: require("./generators/item.route"),
+  monster: require("./generators/monster.route"),
   npc: require("./generators/npc.route"),
   plotHook: require("./generators/plotHook.route"),
   tavern: require("./generators/tavern.route"),
+  town: require("./generators/town.route"),
   // User
   profile: require("./profile.route"),
   user: require("./user.route"),
@@ -14,6 +17,17 @@ module.exports = {
   // NPCs
   quirk: require("./admin/generatorData/quirk.route"),
   activity: require("./admin/generatorData/activity.route"),
+  // Character
+  backstory: require("./admin/generatorData/character/backstory.route"),
+  characterClass: require("./admin/generatorData/character/characterClass.route"),
+  race: require("./admin/generatorData/character/race.route"),
+  author: require("./admin/generatorData/character/author.route"),
+  characterTrait: require("./admin/generatorData/character/characterTrait.route"),
+  classTrait: require("./admin/generatorData/character/classTrait.route"),
+  culture: require("./admin/generatorData/character/culture.route"),
+  locale: require("./admin/generatorData/character/locale.route"),
+  origin: require("./admin/generatorData/character/origin.route"),
+  tone: require("./admin/generatorData/character/tone.route"),
   // Items
   itemEffect: require("./admin/generatorData/item/itemEffect.route"),
   itemCurse: require("./admin/generatorData/item/itemCurse.route"),
@@ -26,5 +40,6 @@ module.exports = {
   tavernFeature: require("./admin/generatorData/tavern/tavernFeature.route"),
   tavernRumor: require("./admin/generatorData/tavern/tavernRumor.route"),
   // Monster
+  monsterData: require("./admin/generatorData/monster/monsterData.route"),
   monsterAbility: require("./admin/generatorData/monster/monsterAbility.route"),
 };

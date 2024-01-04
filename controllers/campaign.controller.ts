@@ -1,4 +1,4 @@
-import { Campaign, Image, User } from "@prisma/client";
+import { Campaign, Image, NPC, User } from "@prisma/client";
 import { Request, Response } from "express";
 const jwt = require("jsonwebtoken");
 import * as cloudinary from "cloudinary";
@@ -170,12 +170,80 @@ const updateImage = async (req: any, res: Response) => {
   }
 };
 
+const getNPCS = async (req: any, res: Response) => {
+  const { id } = req.params;
+  try {
+    const npcs: NPC[] = await prisma.NPC.findMany({
+      where: {
+        campaignId: parseInt(id, 10),
+      },
+      orderBy: {
+        id: "asc",
+      },
+    });
+    res.status(200).json(npcs);
+  } catch (error: any) {
+    console.log(error);
+    res.status(400).json({ error: error.message });
+  }
+};
+
+const getNPC = async (req: any, res: Response) => {
+  const { id } = req.params;
+
+  try {
+    const npcs: NPC[] = await prisma.NPC.findFirst({
+      where: {
+        id: parseInt(id, 10),
+      },
+    });
+    res.status(200).json(npcs);
+  } catch (error: any) {
+    console.log(error);
+    res.status(400).json({ error: error.message });
+  }
+};
+
+const upsertNPC = async (req: any, res: Response) => {
+  const { id, npc } = req.body;
+  try {
+    let upsertedNPC;
+    if (!npc.id) {
+      upsertedNPC = await prisma.NPC.create({
+        data: {
+          name: npc.name,
+          campaign: {
+            connect: { id: parseInt(npc.campaignId, 10) },
+          },
+        },
+      });
+    } else {
+      upsertedNPC = await prisma.NPC.update({
+        where: { id: npc.id },
+        data: {
+          name: npc.name,
+          campaign: {
+            connect: { id: parseInt(npc.campaignId, 10) },
+          },
+        },
+      });
+    }
+
+    res.status(200).json(upsertedNPC);
+  } catch (error: any) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
 module.exports = {
   create,
   getByUserId,
   getById,
   updateImage,
   deleteCampaign,
+  getNPCS,
+  getNPC,
+  upsertNPC,
 };
 
 // // Get all profiles
