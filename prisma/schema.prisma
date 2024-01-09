@@ -50,19 +50,28 @@ model Campaign {
 model NPC {
   id      Int      @id @default(autoincrement())
   name    String?
+  job String?
+  alignment String?
+  type String?
+  bio String?
+  secrets String?
+  honorific String?
+  title String?
   campaignId Int 
   campaign Campaign  @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  imageId Int? @unique
+  image Image?  @relation(fields: [imageId], references: [id], onDelete: Cascade)
 }
 
 model Quirk {
   id      Int      @id @default(autoincrement())
-  name    String    @unique
+  name    String    
   info    String @unique
 }
 
 model Activity {
   id      Int      @id @default(autoincrement())
-  name    String @unique
+  name    String 
   info    String @unique
 }
 
@@ -107,6 +116,7 @@ model Image {
    publicId String?
    campaign Campaign?
    profile Profile?
+   npc NPC?
 }
 
 model ItemEffect {
@@ -127,7 +137,7 @@ model ItemCurse {
 
 model PlotHook {
   id        Int        @id @default(autoincrement())
-  name      String @unique
+  name      String 
   description String @unique
   type      String @default("npc")
 }
@@ -162,8 +172,8 @@ model TavernEvent {
 
 model MenuItem {
   id        Int        @id @default(autoincrement())
-  name      String @unique
-  description String @unique
+  name      String 
+  description String 
   price String
   type      String @default("food")
   quality   String @default("common")
@@ -171,8 +181,8 @@ model MenuItem {
 
 model MonsterAbility {
   id        Int        @id @default(autoincrement())
-  affix      String @unique
-  description String @unique
+  affix      String 
+  description String 
   weight String @default("common")
   cr  Decimal @db.Decimal(6,3)
 }

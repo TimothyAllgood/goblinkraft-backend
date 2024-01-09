@@ -8,9 +8,10 @@ const generateNpc = async (req, res) => {
 };
 
 const generateNpcs = async (req, res) => {
-  let amount = 6;
+  let { amount } = req.body;
+  let total = amount || 3;
   let npcs = [];
-  for (let i = 0; i < amount; i++) {
+  for (let i = 0; i < total; i++) {
     const npc = await NPC.generateNpc();
     npcs.push(npc);
   }

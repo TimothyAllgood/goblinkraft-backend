@@ -7,14 +7,20 @@ const { userAuth, adminAuth } = require("../middleware/auth");
 
 // Current Path = '/api/v1/campaigns'
 
-router.post("/create", multer, ctrl.campaign.create);
-router.post("/update-image", multer, ctrl.campaign.updateImage);
-router.get("/", ctrl.campaign.getByUserId);
-router.get("/:id", ctrl.campaign.getById);
+router.post("/create", [multer, userAuth], ctrl.campaign.create);
+router.post("/update-image", [multer, userAuth], ctrl.campaign.updateImage);
+router.get("/", userAuth, ctrl.campaign.getByUserId);
+router.get("/:id", userAuth, ctrl.campaign.getById);
 router.delete("/delete/:id", userAuth, ctrl.campaign.deleteCampaign);
-router.get("/npcs/getall/:id", ctrl.campaign.getNPCS);
-router.get("/npcs/get/:id", ctrl.campaign.getNPC);
-router.post("/npcs/upsert", ctrl.campaign.upsertNPC);
+router.get("/npcs/getall/:id", userAuth, ctrl.campaign.getNPCS);
+router.get("/npcs/get/:id", userAuth, ctrl.campaign.getNPC);
+router.post("/npcs/upsert", userAuth, ctrl.campaign.upsertNPC);
+router.delete("/npcs/delete/:id", userAuth, ctrl.campaign.deleteNPC);
+router.post(
+  "/npcs/update-image",
+  [multer, userAuth],
+  ctrl.campaign.updateNpcImage
+);
 
 // exports
 module.exports = router;

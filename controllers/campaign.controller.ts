@@ -59,20 +59,27 @@ const getByUserId = async (req: Request, res: Response) => {
         token,
         process.env.SECRET,
         async (err: Error, decodedUser: User) => {
-          const campaigns: Campaign[] = await prisma.campaign.findMany({
-            where: {
-              userId: decodedUser.id,
-            },
-            select: {
-              id: true,
-              name: true,
-              backgroundImage: true,
-            },
-            orderBy: {
-              id: "asc",
-            },
-          });
-          res.status(200).json(campaigns);
+          try {
+            const campaigns: Campaign[] = await prisma.campaign.findMany({
+              where: {
+                userId: decodedUser.id,
+              },
+              select: {
+                id: true,
+                name: true,
+                backgroundImage: true,
+              },
+              orderBy: {
+                id: "asc",
+              },
+            });
+            return res.status(200).json(campaigns);
+          } catch (error: any) {
+            if (err) {
+              return res.status(401).json(err);
+            }
+            return res.status(400).json({ error: error.message });
+          }
         }
       );
     } catch (error: any) {
@@ -177,6 +184,7 @@ const getNPCS = async (req: any, res: Response) => {
       where: {
         campaignId: parseInt(id, 10),
       },
+      include: { image: true },
       orderBy: {
         id: "asc",
       },
@@ -196,6 +204,7 @@ const getNPC = async (req: any, res: Response) => {
       where: {
         id: parseInt(id, 10),
       },
+      include: { image: true },
     });
     res.status(200).json(npcs);
   } catch (error: any) {
@@ -212,6 +221,13 @@ const upsertNPC = async (req: any, res: Response) => {
       upsertedNPC = await prisma.NPC.create({
         data: {
           name: npc.name,
+          job: npc.job || null,
+          alignment: npc.alignment || null,
+          type: npc.type || null,
+          bio: npc.bio || null,
+          secrets: npc.secrets || null,
+          honorific: npc.honorific || null,
+          title: npc.title || null,
           campaign: {
             connect: { id: parseInt(npc.campaignId, 10) },
           },
@@ -220,8 +236,16 @@ const upsertNPC = async (req: any, res: Response) => {
     } else {
       upsertedNPC = await prisma.NPC.update({
         where: { id: npc.id },
+        include: { image: true },
         data: {
           name: npc.name,
+          job: npc.job || null,
+          alignment: npc.alignment || null,
+          type: npc.type || null,
+          bio: npc.bio || null,
+          secrets: npc.secrets || null,
+          honorific: npc.honorific || null,
+          title: npc.title || null,
           campaign: {
             connect: { id: parseInt(npc.campaignId, 10) },
           },
@@ -230,6 +254,80 @@ const upsertNPC = async (req: any, res: Response) => {
     }
 
     res.status(200).json(upsertedNPC);
+  } catch (error: any) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+const deleteNPC = async (req: any, res: Response) => {
+  const id = parseInt(req.params.id);
+  try {
+    const npc = await prisma.NPC.findFirst({
+      where: { id: id },
+      include: { image: true },
+    });
+    if (npc.image) {
+      cloudinary.v2.uploader.destroy(
+        npc.image.publicId,
+        async function (result: any) {
+          await prisma.image.delete({
+            where: { id: npc.image.id },
+          });
+        }
+      );
+    }
+    await prisma.NPC.delete({ where: { id } });
+    res.status(204).send();
+  } catch (error: any) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+const updateNpcImage = async (req: any, res: Response) => {
+  const { npcId } = req.body;
+
+  try {
+    const npc = await prisma.NPC.findFirst({
+      where: { id: parseInt(npcId, 10) },
+      include: { image: true },
+    });
+
+    if (npc.image) {
+      cloudinary.v2.uploader.destroy(
+        npc.image.publicId,
+        function (result: any) {
+          console.log(result);
+        }
+      );
+    }
+    if (req.file) {
+      cloudinary.v2.uploader.upload(
+        req.file.path,
+        async function (error: any, result: any) {
+          if (result) {
+            const newImage: Image = await prisma.image.create({
+              data: {
+                url: result.url,
+                assetId: result.asset_id,
+                publicId: result.public_id,
+              },
+            });
+
+            const updatedNpc: NPC = await prisma.NPC.update({
+              where: {
+                id: parseInt(npcId, 10),
+              },
+              data: {
+                imageId: newImage.id,
+              },
+              include: { image: true },
+            });
+
+            res.status(200).json(updatedNpc);
+          }
+        }
+      );
+    }
   } catch (error: any) {
     res.status(400).json({ error: error.message });
   }
@@ -244,6 +342,8 @@ module.exports = {
   getNPCS,
   getNPC,
   upsertNPC,
+  deleteNPC,
+  updateNpcImage,
 };
 
 // // Get all profiles
