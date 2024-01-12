@@ -12,6 +12,7 @@ router.post("/bulk", ctrl.monsterData.createMany);
 router.post("/update", ctrl.monsterData.update);
 router.get("/", ctrl.monsterData.get);
 router.get("/:id", ctrl.monsterData.getById);
+router.get("/autocomplete/:search", ctrl.monsterData.getAutocomplete);
 router.delete("/delete/:id", ctrl.monsterData.deleteById);
 
 // exports

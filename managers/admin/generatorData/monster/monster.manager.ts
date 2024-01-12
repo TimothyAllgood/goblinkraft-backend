@@ -67,6 +67,24 @@ const getById = async (id: number) => {
   }
 };
 
+const getAutocomplete = async (search: string) => {
+  try {
+    const monsters: Monster[] = await prisma.monster.findMany({
+      where: {
+        name: {
+          contains: search,
+          mode: "insensitive",
+        },
+      },
+      take: 10,
+    });
+    return monsters;
+  } catch (error: any) {
+    console.log(error);
+    return error;
+  }
+};
+
 const deleteById = async (id: number) => {
   try {
     const monster: Monster[] = await prisma.monster.delete({
@@ -86,5 +104,6 @@ module.exports = {
   update,
   get,
   getById,
+  getAutocomplete,
   deleteById,
 };

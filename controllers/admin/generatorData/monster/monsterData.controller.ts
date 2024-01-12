@@ -49,6 +49,16 @@ const getById = async (req: Request, res: Response) => {
   }
 };
 
+const getAutocomplete = async (req: Request, res: Response) => {
+  const { search } = req.params;
+  try {
+    let data: Monster = await manager.monster.getAutocomplete(search);
+    res.status(200).json(data);
+  } catch (error: any) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
 const deleteById = async (req: Request, res: Response) => {
   const id: number = parseInt(req.params.id, 10);
   try {
@@ -65,5 +75,6 @@ module.exports = {
   update,
   get,
   getById,
+  getAutocomplete,
   deleteById,
 };
