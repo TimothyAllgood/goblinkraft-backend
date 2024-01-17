@@ -5,7 +5,6 @@ const prisma = new PrismaClient();
 
 const create = async (body: Tone) => {
   try {
-    console.log(body);
     const newTone: Tone = await prisma.tone.create({
       data: body,
     });

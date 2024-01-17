@@ -1,7 +1,7 @@
 const { v4: uuidv4 } = require("uuid");
 const {
   getRandomDbElement,
-  getRandomDiceRole,
+  getRandomDiceRoll,
   getRandomFilteredMonster,
 } = require("../util/random.util");
 
@@ -31,7 +31,7 @@ const generateMonster = async (filters = {}, randomizeAffixes = false) => {
     });
   }
 
-  const rollDice = getRandomDiceRole(seed + "monster-dice");
+  const rollDice = getRandomDiceRoll(seed + "monster-dice");
   let weight = "common";
   if (rollDice >= 0 && rollDice <= 2) {
     weight = "veryrare";
@@ -59,7 +59,7 @@ const generateMonster = async (filters = {}, randomizeAffixes = false) => {
   let affixAmount = 1;
 
   if (randomizeAffixes) {
-    affixAmount = await getRandomDiceRole(seed, 3);
+    affixAmount = await getRandomDiceRoll(seed, 3);
   }
 
   for (let i = 0; i < affixAmount; i++) {
@@ -112,7 +112,6 @@ const parseMonster = (monster) => {
 
 const updateMonsterSource = (monster) => {
   let split = monster.source.split(":");
-  console.log(split);
   let source = split[0].trim();
   let page = split[1].trim();
   monster.source = source;

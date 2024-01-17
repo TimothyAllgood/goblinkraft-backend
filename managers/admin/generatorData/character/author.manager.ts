@@ -5,7 +5,6 @@ const prisma = new PrismaClient();
 
 const create = async (body: Author) => {
   try {
-    console.log(body);
     const newAuthor: Author = await prisma.author.create({
       data: body,
     });

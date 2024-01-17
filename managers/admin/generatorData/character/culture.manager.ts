@@ -5,7 +5,6 @@ const prisma = new PrismaClient();
 
 const create = async (body: Culture) => {
   try {
-    console.log(body);
     const newCulture: Culture = await prisma.culture.create({
       data: body,
     });

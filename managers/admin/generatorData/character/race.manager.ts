@@ -5,7 +5,6 @@ const prisma = new PrismaClient();
 
 const create = async (body: Race) => {
   try {
-    console.log(body);
     const newRace: Race = await prisma.race.create({
       data: body,
     });

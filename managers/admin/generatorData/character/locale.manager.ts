@@ -5,7 +5,6 @@ const prisma = new PrismaClient();
 
 const create = async (body: Locale) => {
   try {
-    console.log(body);
     const newLocale: Locale = await prisma.locale.create({
       data: body,
     });

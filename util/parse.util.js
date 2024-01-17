@@ -408,7 +408,6 @@ const parseColonArray = (items, fields) => {
 };
 
 const parseJson = (json) => {
-  console.log(json);
   return json;
 };
 

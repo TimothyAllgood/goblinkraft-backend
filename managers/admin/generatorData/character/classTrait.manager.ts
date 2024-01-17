@@ -5,7 +5,6 @@ const prisma = new PrismaClient();
 
 const create = async (body: ClassTrait) => {
   try {
-    console.log(body);
     const newClassTrait: ClassTrait = await prisma.classTrait.create({
       data: body,
     });

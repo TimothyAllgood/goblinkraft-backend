@@ -5,7 +5,6 @@ const prisma = new PrismaClient();
 
 const create = async (body: CharacterTrait) => {
   try {
-    console.log(body);
     const newCharacterTrait: CharacterTrait =
       await prisma.characterTrait.create({
         data: body,

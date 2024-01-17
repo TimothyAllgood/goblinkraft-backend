@@ -5,7 +5,6 @@ const prisma = new PrismaClient();
 
 const create = async (body: Origin) => {
   try {
-    console.log(body);
     const newOrigin: Origin = await prisma.origin.create({
       data: body,
     });

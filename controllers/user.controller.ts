@@ -216,7 +216,6 @@ const sendPasswordReset = async (req: Request, res: Response) => {
 const resetPassword = async (req: Request, res: Response) => {
   // HASH USER PASSWORD
   const hash = await argon2.hash(req.body.password);
-  console.log(req.body.id);
   await prisma.user.update({
     where: { id: parseInt(req.body.id, 10) },
     data: { password: hash },
@@ -276,8 +275,6 @@ const getGoogleUserInfo = async (req: Request, res: Response) => {
       where: { email: data.email },
       include: { profile: true },
     });
-
-    console.log(foundEmail);
 
     if (foundEmail && foundEmail.type !== "google") {
       await prisma.user.update({

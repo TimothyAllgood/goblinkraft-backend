@@ -9,7 +9,6 @@ const itemData = require("../data/item.data");
 const generateItem = async (affixAmount = 1, cursedChance = 0.1) => {
   const seed = uuidv4();
   const itemType = getRandomElement(seed + "itemType", itemData.itemType);
-  console.log(itemType);
   const type = getRandomElement(seed + "type", itemData[itemType]);
   let effects = [];
   let categories = itemData.categories;

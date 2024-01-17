@@ -107,7 +107,6 @@ const genders = [
 
 const generateNpc = async (initialSeed, assignedJob) => {
   const seed = initialSeed || uuidv4();
-
   const race = getRandomElement(seed + "race", races);
   const gender = getRandomElement(seed + "gender", genders);
 

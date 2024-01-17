@@ -15,7 +15,6 @@ const create = async (body: TavernEvent) => {
 };
 
 const createMany = async (data: TavernEvent[]) => {
-  console.log(data);
   try {
     const newTavernEvents: TavernEvent[] = await prisma.tavernEvent.createMany({
       data,

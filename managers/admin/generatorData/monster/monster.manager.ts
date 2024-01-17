@@ -5,7 +5,6 @@ const prisma = new PrismaClient();
 
 const create = async (body: Monster) => {
   try {
-    console.log(body);
     const newMonster: Monster = await prisma.monster.create({
       data: body,
     });

@@ -5,7 +5,6 @@ const prisma = new PrismaClient();
 
 const create = async (body: CharacterClass) => {
   try {
-    console.log(body);
     const newCharacterClass: CharacterClass =
       await prisma.characterClass.create({
         data: body,

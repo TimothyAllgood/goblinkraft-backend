@@ -5,7 +5,6 @@ const prisma = new PrismaClient();
 
 const create = async (body: Backstory) => {
   try {
-    console.log(body);
     const newBackstory: Backstory = await prisma.backstory.create({
       data: body,
     });

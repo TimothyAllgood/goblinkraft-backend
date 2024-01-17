@@ -22,7 +22,7 @@ const getRandomPercent = (seed, minPercent = 0, maxPercent) => {
   return percent / 100;
 };
 
-const getRandomDiceRole = (seed, diceSize = 32) => {
+const getRandomDiceRoll = (seed, diceSize = 32) => {
   const rng = seedrandom.alea(seed); // Create a seeded RNG instance
 
   // Generate a random floating-point number between 0 (inclusive) and 32 (exclusive)
@@ -199,7 +199,7 @@ module.exports = {
   getRandomDbElement,
   getRandomFilteredMonster,
   getRandomFilteredBackstory,
-  getRandomDiceRole,
+  getRandomDiceRoll,
   getRandomCharacterTraits,
   getRandomClassTraits,
 };
