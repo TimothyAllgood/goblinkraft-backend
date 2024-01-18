@@ -21,6 +21,14 @@ router.post(
   [multer, userAuth],
   ctrl.campaign.updateNpcImage
 );
+router.get("/settlements/getall/:id", userAuth, ctrl.campaign.getSettlements);
+router.get("/settlements/get/:id", userAuth, ctrl.campaign.getSettlement);
+router.post("/settlements/upsert", userAuth, ctrl.campaign.upsertSettlement);
+router.delete(
+  "/settlements/delete/:id",
+  userAuth,
+  ctrl.campaign.deleteSettlement
+);
 
 // exports
 module.exports = router;

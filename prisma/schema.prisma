@@ -45,6 +45,7 @@ model Campaign {
   backgroundImageId Int? @unique
   backgroundImage Image?  @relation(fields: [backgroundImageId], references: [id], onDelete: Cascade)
   npcs NPC[]
+  settlements Settlement[]
 }
 
 model NPC {
@@ -61,6 +62,8 @@ model NPC {
   campaign Campaign  @relation(fields: [campaignId], references: [id], onDelete: Cascade)
   imageId Int? @unique
   image Image?  @relation(fields: [imageId], references: [id], onDelete: Cascade)
+  settlement Settlement[] @relation("settlementNpcs")
+  leadSettlement Settlement? 
 }
 
 model Quirk {
@@ -281,6 +284,22 @@ model Author {
     id        Int        @id @default(autoincrement())
     name  String
     hint      String?
+}
+
+model Settlement {
+  id    Int     @id @default(autoincrement())
+  name  String
+  population Int?  
+  description String?
+  leader NPC? @relation(fields: [leaderId], references: [id])
+  leaderId Int? @unique
+  leaderTitle String?
+  notableNpcs NPC[] @relation("settlementNpcs")
+  resources String?
+  economy String?
+  lawAndOrder String?
+  campaignId Int 
+  campaign Campaign  @relation(fields: [campaignId], references: [id], onDelete: Cascade)
 }
 
 

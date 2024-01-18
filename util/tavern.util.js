@@ -20,6 +20,7 @@ const nouns = [
   "Crown",
   "Chalice",
   "Phoenix",
+  "Cloaca",
   "Goblin",
   "Wizard",
   "Forest",

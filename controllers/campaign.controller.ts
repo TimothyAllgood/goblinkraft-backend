@@ -1,4 +1,4 @@
-import { Campaign, Image, NPC, User } from "@prisma/client";
+import { Campaign, Image, NPC, User, Settlement } from "@prisma/client";
 import { Request, Response } from "express";
 const jwt = require("jsonwebtoken");
 import * as cloudinary from "cloudinary";
@@ -333,6 +333,131 @@ const updateNpcImage = async (req: any, res: Response) => {
   }
 };
 
+const getSettlements = async (req: any, res: Response) => {
+  const { id } = req.params;
+  try {
+    const settlements: Settlement[] = await prisma.settlement.findMany({
+      where: {
+        campaignId: parseInt(id, 10),
+      },
+      // include: { leader: true },
+      orderBy: {
+        id: "asc",
+      },
+    });
+    res.status(200).json(settlements);
+  } catch (error: any) {
+    console.log(error);
+    res.status(400).json({ error: error.message });
+  }
+};
+
+const getSettlement = async (req: any, res: Response) => {
+  const { id } = req.params;
+
+  try {
+    const settlement: Settlement = await prisma.settlement.findFirst({
+      where: {
+        id: parseInt(id, 10),
+      },
+      include: { leader: true, notableNpcs: true },
+    });
+    res.status(200).json(settlement);
+  } catch (error: any) {
+    console.log(error);
+    res.status(400).json({ error: error.message });
+  }
+};
+
+const upsertSettlement = async (req: any, res: Response) => {
+  const { id, settlement } = req.body;
+  try {
+    let upsertedSettlement;
+    if (!settlement.id) {
+      upsertedSettlement = await prisma.settlement.create({
+        include: { leader: true, notableNpcs: true },
+        data: {
+          name: settlement.name,
+          population: parseInt(settlement.population, 10) || 0,
+          description: settlement.description || null,
+          leader: settlement.leader || null,
+          leaderTitle: settlement.leaderTitle || null,
+          economy: settlement.economy || null,
+          lawAndOrder: settlement.lawAndOrder || null,
+          campaign: {
+            connect: { id: parseInt(settlement.campaignId, 10) },
+          },
+          notableNpcs: {
+            connect: settlement.notableNpcs.map((npc: NPC) => ({
+              id: npc.id,
+            })),
+          },
+        },
+      });
+    } else {
+      const existingNotableNpcs = await prisma.settlement
+        .findUnique({
+          where: { id: settlement.id },
+        })
+        .notableNpcs();
+
+      // Finding NPCs to disconnect
+      const npcsToDisconnect = existingNotableNpcs.filter(
+        (existingNpc: NPC) => {
+          return !settlement.notableNpcs.some(
+            (npc: NPC) => npc.id === existingNpc.id
+          );
+        }
+      );
+
+      upsertedSettlement = await prisma.settlement.update({
+        where: { id: settlement.id },
+        include: { leader: true, notableNpcs: true },
+        data: {
+          name: settlement.name,
+          population: parseInt(settlement.population, 10) || 0,
+          description: settlement.description || null,
+          leader: settlement.leader
+            ? {
+                connect: {
+                  id: parseInt(settlement.leader.id, 10),
+                },
+              }
+            : { disconnect: true },
+          leaderTitle: settlement.leaderTitle || null,
+          economy: settlement.economy || null,
+          lawAndOrder: settlement.lawAndOrder || null,
+          campaign: {
+            connect: { id: parseInt(settlement.campaignId, 10) },
+          },
+          notableNpcs: {
+            connect: settlement.notableNpcs.map((npc: NPC) => ({
+              id: npc.id,
+            })),
+            disconnect: npcsToDisconnect.map((npc: NPC) => ({
+              id: npc.id,
+            })),
+          },
+        },
+      });
+    }
+
+    res.status(200).json(upsertedSettlement);
+  } catch (error: any) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+const deleteSettlement = async (req: any, res: Response) => {
+  const id = parseInt(req.params.id);
+  try {
+    await prisma.settlement.delete({ where: { id } });
+    res.status(204).send();
+  } catch (error: any) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
 module.exports = {
   create,
   getByUserId,
@@ -344,55 +469,8 @@ module.exports = {
   upsertNPC,
   deleteNPC,
   updateNpcImage,
+  getSettlements,
+  getSettlement,
+  upsertSettlement,
+  deleteSettlement,
 };
-
-// // Get all profiles
-// exports.getAllProfiles = async (req: Request, res: Response) => {
-//   try {
-//     const profiles = await prisma.profile.findMany();
-//     res.json(profiles);
-//   } catch (error: any) {
-//     res.status(400).json({ error: error.message });
-//   }
-// };
-
-// // Get a single profile by ID
-// exports.getProfileById = async (req: Request, res: Response) => {
-//   const id = parseInt(req.params.id);
-//   try {
-//     const profile = await prisma.profile.findUnique({ where: { id } });
-//     if (profile) {
-//       res.json(profile);
-//     } else {
-//       res.status(404).send("Profile not found");
-//     }
-//   } catch (error: any) {
-//     res.status(400).json({ error: error.message });
-//   }
-// };
-
-// // Update a profile
-// exports.updateProfile = async (req: Request, res: Response) => {
-//   const id = parseInt(req.params.id);
-//   const { bio, name } = req.body;
-//   try {
-//     const updatedProfile = await prisma.profile.update({
-//       where: { id },
-//       data: { bio, name },
-//     });
-//     res.json(updatedProfile);
-//   } catch (error: any) {
-//     res.status(400).json({ error: error.message });
-//   }
-// };
-
-// // Delete a profile
-// exports.deleteProfile = async (req: Request, res: Response) => {
-//   const id = parseInt(req.params.id);
-//   try {
-//     await prisma.profile.delete({ where: { id } });
-//     res.status(204).send();
-//   } catch (error: any) {
-//     res.status(400).json({ error: error.message });
-//   }
-// };
