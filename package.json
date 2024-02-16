@@ -4,8 +4,7 @@
   "description": "",
   "main": "server.ts",
   "scripts": {
-    "install": "npm ci",
-    "build": "npx prisma generate",
+    "build": "npm install && npm run build && npx prisma generate",
     "start": "ts-node --esm server.ts",
     "build:digitalocean": "npm install --production=false && npm run build && npm ci && npx prisma generate",
     "test": "echo \"Error: no test specified\" && exit 1"
