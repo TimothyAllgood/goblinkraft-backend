@@ -9,5 +9,6 @@ const { userAuth, adminAuth } = require("../../middleware/auth");
 
 router.post("/", ctrl.plotHook.generatePlotHook);
 router.post("/generate-plothooks", ctrl.plotHook.generatePlotHooks);
+router.post("/generate-adventure", ctrl.plotHook.generateAIAdventure);
 // exports
 module.exports = router;

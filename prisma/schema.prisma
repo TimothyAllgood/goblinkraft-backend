@@ -28,6 +28,8 @@ model User {
   username     String     @unique
   password     String?
   subscription String?
+  subscriptionId String?
+  customerId String?
   subscribed   Boolean    @default(false)
   verified     Boolean    @default(false)
   role         Role       @default(USER)
@@ -58,6 +60,8 @@ model NPC {
   secrets String?
   honorific String?
   title String?
+  race String? 
+  age String?
   campaignId Int 
   campaign Campaign  @relation(fields: [campaignId], references: [id], onDelete: Cascade)
   imageId Int? @unique

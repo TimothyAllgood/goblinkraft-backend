@@ -228,6 +228,8 @@ const upsertNPC = async (req: any, res: Response) => {
           secrets: npc.secrets || null,
           honorific: npc.honorific || null,
           title: npc.title || null,
+          age: npc.age || null,
+          race: npc.race || null,
           campaign: {
             connect: { id: parseInt(npc.campaignId, 10) },
           },
@@ -246,6 +248,8 @@ const upsertNPC = async (req: any, res: Response) => {
           secrets: npc.secrets || null,
           honorific: npc.honorific || null,
           title: npc.title || null,
+          age: npc.age || null,
+          race: npc.race || null,
           campaign: {
             connect: { id: parseInt(npc.campaignId, 10) },
           },
@@ -343,6 +347,11 @@ const getSettlements = async (req: any, res: Response) => {
       // include: { leader: true },
       orderBy: {
         id: "asc",
+      },
+      select: {
+        id: true,
+        population: true,
+        name: true,
       },
     });
     res.status(200).json(settlements);
