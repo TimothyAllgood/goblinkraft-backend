@@ -168,7 +168,7 @@ const sendVerification = async (req: Request, res: Response) => {
 };
 
 const generateVerification = async (id: number, email: string) => {
-  const link = `http://localhost:5173/verify/${id}`;
+  const link = `https://goblinkraft.archerrosedigital.com/verify/${id}`;
 
   await sendEmail(email, "Verify Account", link);
 };
@@ -199,7 +199,7 @@ const sendPasswordReset = async (req: Request, res: Response) => {
         .json({ message: "No user found with that email address" });
     }
 
-    const link = `http://localhost:5173/reset-password/${user.id}`;
+    const link = `https://goblinkraft.archerrosedigital.com/reset-password/${user.id}`;
 
     await sendEmail(user.email, "Password reset", link);
 
@@ -226,7 +226,7 @@ const resetPassword = async (req: Request, res: Response) => {
 const getGoogleUrl = async (req: Request, res: Response) => {
   const stringifiedParams = qs.stringify({
     client_id: process.env.GOOGLE_CLIENT_ID,
-    redirect_uri: "http://localhost:5173/",
+    redirect_uri: "https://goblinkraft.archerrosedigital.com/",
     scope: [
       "https://www.googleapis.com/auth/userinfo.email",
       "https://www.googleapis.com/auth/userinfo.profile",
@@ -249,7 +249,7 @@ async function getAccessTokenFromCode(code: string) {
       data: {
         client_id: process.env.GOOGLE_CLIENT_ID,
         client_secret: process.env.GOOGLE_CLIENT_SECRET,
-        redirect_uri: "http://localhost:5173/",
+        redirect_uri: "https://goblinkraft.archerrosedigital.com/",
         grant_type: "authorization_code",
         code: code,
       },
