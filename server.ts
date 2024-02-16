@@ -160,8 +160,7 @@ async function main() {
         },
       ],
       ui_mode: "embedded",
-      return_url:
-        "https://goblinkraft.archerrosedigital.com/return?session_id={CHECKOUT_SESSION_ID}",
+      return_url: `${process.env.CLIENT_URL}/return?session_id={CHECKOUT_SESSION_ID}`,
     });
     res.status(200).json({
       clientSecret: session.client_secret,
