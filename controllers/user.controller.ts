@@ -94,7 +94,8 @@ const login = async (req: Request, res: Response) => {
     if (!foundUser) {
       return res.status(400).json({
         status: 400,
-        message: "Username is incorrect",
+        message:
+          "Oops! Something went wrong with your login. Please double-check your information and try again.",
       });
     }
 
@@ -106,7 +107,8 @@ const login = async (req: Request, res: Response) => {
     if (!isMatch) {
       return res.status(400).json({
         status: 400,
-        message: "Password is incorrect",
+        message:
+          "Oops! Something went wrong with your login. Please double-check your information and try again.",
       });
     }
 
