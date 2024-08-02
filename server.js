@@ -32,13 +32,13 @@ app.post(
   bodyParser.raw({ type: "application/json" }),
   async (request, response) => {
     const payload = request.body;
-    const sig: any = request.headers["stripe-signature"];
+    const sig = request.headers["stripe-signature"];
 
     let event;
 
     try {
       event = stripe.webhooks.constructEvent(payload, sig, endpointSecret);
-    } catch (err: any) {
+    } catch (err) {
       return response.status(400).send(`Webhook Error: ${err.message}`);
     }
 
@@ -52,7 +52,7 @@ app.post(
         }
       );
 
-      const lineItems: any = sessionWithLineItems.line_items;
+      const lineItems = sessionWithLineItems.line_items;
 
       // Save subscription
       const user = await prisma.user.update({
@@ -61,8 +61,8 @@ app.post(
         },
         data: {
           subscription: lineItems.data[0].description.toLowerCase(),
-          subscriptionId: sessionWithLineItems?.subscription as string,
-          customerId: sessionWithLineItems?.customer as string,
+          subscriptionId: sessionWithLineItems?.subscription,
+          customerId: sessionWithLineItems?.customer,
           subscribed: true,
         },
         include: {
@@ -155,7 +155,7 @@ async function main() {
   app.post("/create-subscription", async (req, res) => {
     const { priceId } = req.body;
     console.log(priceId);
-    const session: any = await stripe.checkout.sessions.create({
+    const session = await stripe.checkout.sessions.create({
       mode: "subscription",
       line_items: [
         {
@@ -171,8 +171,8 @@ async function main() {
     });
   });
 
-  app.get("/session-status", async (req: any, res) => {
-    const session: any = await stripe.checkout.sessions.retrieve(
+  app.get("/session-status", async (req, res) => {
+    const session = await stripe.checkout.sessions.retrieve(
       req.query.session_id
     );
 
@@ -183,7 +183,7 @@ async function main() {
   });
 
   // Catch unregistered routes
-  app.all("*", (req: Request, res: Response) => {
+  app.all("*", (req, res) => {
     res.status(404).json({ error: `Route ${req.originalUrl} not found` });
   });
 
