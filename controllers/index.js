@@ -9,6 +9,7 @@ module.exports = {
   plotHook: require("./generators/plotHook.controller"),
   tavern: require("./generators/tavern.controller"),
   town: require("./generators/town.controller"),
+  combat: require("./generators/combat.controller"),
   // User
   profile: require("./profile.controller"),
   user: require("./user.controller"),
@@ -17,6 +18,8 @@ module.exports = {
   // Character
   backstory: require("./admin/generatorData/character/backstory.controller"),
   characterClass: require("./admin/generatorData/character/characterClass.controller"),
+  subclass: require("./admin/generatorData/character/subclass.controller"),
+  spell: require("./admin/generatorData/character/spell.controller"),
   race: require("./admin/generatorData/character/race.controller"),
   author: require("./admin/generatorData/character/author.controller"),
   characterTrait: require("./admin/generatorData/character/characterTrait.controller"),

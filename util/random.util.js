@@ -1,6 +1,8 @@
 const seedrandom = require("seedrandom");
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
+const NodeCache = require("node-cache");
+const myCache = new NodeCache();
 
 const getRandomElement = (seed, array) => {
   const rng = seedrandom.alea(seed);

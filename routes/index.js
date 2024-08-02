@@ -9,6 +9,7 @@ module.exports = {
   plotHook: require("./generators/plotHook.route"),
   tavern: require("./generators/tavern.route"),
   town: require("./generators/town.route"),
+  combat: require("./generators/combat.route"),
   // User
   profile: require("./profile.route"),
   user: require("./user.route"),
@@ -20,6 +21,8 @@ module.exports = {
   // Character
   backstory: require("./admin/generatorData/character/backstory.route"),
   characterClass: require("./admin/generatorData/character/characterClass.route"),
+  subclass: require("./admin/generatorData/character/subclass.route"),
+  spell: require("./admin/generatorData/character/spell.route"),
   race: require("./admin/generatorData/character/race.route"),
   author: require("./admin/generatorData/character/author.route"),
   characterTrait: require("./admin/generatorData/character/characterTrait.route"),

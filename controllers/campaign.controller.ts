@@ -57,7 +57,7 @@ const getByUserId = async (req: Request, res: Response) => {
     try {
       jwt.verify(
         token,
-        process.env.SECRET,
+        process.env.DECODE_SECRET,
         async (err: Error, decodedUser: User) => {
           try {
             const campaigns: Campaign[] = await prisma.campaign.findMany({
@@ -189,6 +189,7 @@ const getNPCS = async (req: any, res: Response) => {
         id: "asc",
       },
     });
+
     res.status(200).json(npcs);
   } catch (error: any) {
     console.log(error);

@@ -1,11 +1,11 @@
-import { NPCAttribute } from "@prisma/client";
+import { Spell } from "@prisma/client";
 import { Request, Response } from "express";
-const manager = require("../../../managers");
+const manager = require("../../../../managers");
 
 // Create a new Category
 const create = async (req: Request, res: Response) => {
   try {
-    let data: NPCAttribute = await manager.quirk.create(req.body);
+    let data: Spell = await manager.spell.create(req.body);
     res.status(200).json(data);
   } catch (error: any) {
     res.status(400).json({ error: error.message });
@@ -14,7 +14,7 @@ const create = async (req: Request, res: Response) => {
 
 const createMany = async (req: Request, res: Response) => {
   try {
-    let data: NPCAttribute = await manager.quirk.createMany(req.body);
+    let data: Spell = await manager.spell.createMany(req.body);
     res.status(200).json(data);
   } catch (error: any) {
     res.status(400).json({ error: error.message });
@@ -23,7 +23,7 @@ const createMany = async (req: Request, res: Response) => {
 
 const update = async (req: Request, res: Response) => {
   try {
-    let data: NPCAttribute = await manager.quirk.update(req.body);
+    let data: Spell = await manager.spell.update(req.body);
     res.status(200).json(data);
   } catch (error: any) {
     res.status(400).json({ error: error.message });
@@ -32,7 +32,7 @@ const update = async (req: Request, res: Response) => {
 
 const get = async (req: Request, res: Response) => {
   try {
-    let data: NPCAttribute = await manager.quirk.get();
+    let data: Spell = await manager.spell.get();
     res.status(200).json(data);
   } catch (error: any) {
     res.status(400).json({ error: error.message });
@@ -42,7 +42,17 @@ const get = async (req: Request, res: Response) => {
 const getById = async (req: Request, res: Response) => {
   const id: number = parseInt(req.params.id, 10);
   try {
-    let data: NPCAttribute = await manager.quirk.getById(id);
+    let data: Spell = await manager.spell.getById(id);
+    res.status(200).json(data);
+  } catch (error: any) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+const getAutocomplete = async (req: Request, res: Response) => {
+  const { search } = req.params;
+  try {
+    let data: Spell = await manager.spell.getAutocomplete(search);
     res.status(200).json(data);
   } catch (error: any) {
     res.status(400).json({ error: error.message });
@@ -52,7 +62,7 @@ const getById = async (req: Request, res: Response) => {
 const deleteById = async (req: Request, res: Response) => {
   const id: number = parseInt(req.params.id, 10);
   try {
-    let data: NPCAttribute = await manager.quirk.deleteById(id);
+    let data: Spell = await manager.spell.deleteById(id);
     res.status(200).json(data);
   } catch (error: any) {
     res.status(400).json({ error: error.message });
@@ -64,6 +74,7 @@ module.exports = {
   createMany,
   update,
   get,
+  getAutocomplete,
   getById,
   deleteById,
 };

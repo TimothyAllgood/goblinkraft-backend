@@ -1,4 +1,4 @@
-import { Activity, Quirk } from "@prisma/client";
+import { Activity } from "@prisma/client";
 import { NameInfo } from "../../../models/NameInfo";
 
 const { PrismaClient } = require("@prisma/client");
@@ -43,7 +43,11 @@ const update = async (body: NameInfo) => {
 
 const get = async () => {
   try {
-    const activities: Activity[] = await prisma.activity.findMany({});
+    const activities: Activity[] = await prisma.activity.findMany({
+      orderBy: {
+        id: "asc",
+      },
+    });
     return activities;
   } catch (error: any) {
     return error;

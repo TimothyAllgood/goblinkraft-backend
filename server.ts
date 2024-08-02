@@ -1,4 +1,5 @@
 import express, { Request, Response } from "express";
+
 import Stripe from "stripe";
 const stripe = new Stripe(
   "sk_test_51Oa1w7CnGy8JPFhxvsACKgZXq9BFQzP4QRTUaVI6giwgAjHX5KRxOISnrZAsaL0fJ77KEVqJHWSc6ILqIFTk7ACJ005mLejVMW"
@@ -114,6 +115,7 @@ async function main() {
   app.use(`${BASE_URL}/plothooks`, routes.plotHook);
   app.use(`${BASE_URL}/taverns`, routes.tavern);
   app.use(`${BASE_URL}/towns`, routes.town);
+  app.use(`${BASE_URL}/combat`, routes.combat);
   // User
   app.use(`${BASE_URL}/profiles`, routes.profile);
   app.use(`${BASE_URL}/users`, routes.user);
@@ -122,6 +124,8 @@ async function main() {
   // Characters
   app.use(`${BASE_URL}/backstories/data`, routes.backstory);
   app.use(`${BASE_URL}/characterClasses/data`, routes.characterClass);
+  app.use(`${BASE_URL}/subclasses/data`, routes.subclass);
+  app.use(`${BASE_URL}/spells/data`, routes.spell);
   app.use(`${BASE_URL}/races/data`, routes.race);
   app.use(`${BASE_URL}/authors/data`, routes.author);
   app.use(`${BASE_URL}/characterTraits/data`, routes.characterTrait);

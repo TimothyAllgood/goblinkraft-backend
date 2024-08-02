@@ -5,7 +5,9 @@ const qs = require("fast-querystring");
 const jwt = require("jsonwebtoken");
 const argon2 = require("argon2");
 const prisma = new PrismaClient();
-const sendEmail = require("../util/sendEmail");
+const { sendEmail, sendHtmlEmail } = require("../util/sendEmail");
+
+import fs from "fs";
 
 const register = async (req: Request, res: Response) => {
   // VALIDATE FIELD INPUT
@@ -67,7 +69,7 @@ const register = async (req: Request, res: Response) => {
 
     // CREATE TOKEN PAYLOAD
     const payload = { id: newUser.id };
-    const secret = process.env.SECRET;
+    const secret = process.env.DECODE_SECRET;
     const expiration = { expiresIn: "365 days" };
 
     // SIGN TOKEN
@@ -128,7 +130,7 @@ const login = async (req: Request, res: Response) => {
       subscription: foundUser.subscription,
       colorScheme: foundUser.profile.colorScheme,
     };
-    const secret = process.env.SECRET;
+    const secret = process.env.DECODE_SECRET;
     const expiration = { expiresIn: "160000s" };
 
     // SIGN TOKEN
@@ -171,8 +173,14 @@ const sendVerification = async (req: Request, res: Response) => {
 
 const generateVerification = async (id: number, email: string) => {
   const link = `${process.env.CLIENT_URL}/verify/${id}`;
-
-  await sendEmail(email, "Verify Account", link);
+  const html = fs.readFileSync("./util/templates/verifyemail.html", "utf8");
+  await sendHtmlEmail(
+    email,
+    "Verify Goblinkraft Account",
+    html,
+    `Please verify your account by clicking here <a href="${link}">Verify Account</a>`,
+    { link }
+  );
 };
 
 const verifyUser = async (req: Request, res: Response) => {
@@ -292,7 +300,7 @@ const getGoogleUserInfo = async (req: Request, res: Response) => {
         subscribed: foundEmail.subscribed,
         subscription: foundEmail.subscription,
       };
-      const secret = process.env.SECRET;
+      const secret = process.env.DECODE_SECRET;
       const expiration = { expiresIn: "160000s" };
 
       // SIGN TOKEN
@@ -313,7 +321,7 @@ const getGoogleUserInfo = async (req: Request, res: Response) => {
         subscription: foundEmail.subscription,
         colorScheme: foundEmail.profile.colorScheme,
       };
-      const secret = process.env.SECRET;
+      const secret = process.env.DECODE_SECRET;
       const expiration = { expiresIn: "160000s" };
 
       // SIGN TOKEN
@@ -347,7 +355,7 @@ const getGoogleUserInfo = async (req: Request, res: Response) => {
         subscribed: newUser.subscribed,
         subscription: newUser.subscription,
       };
-      const secret = process.env.SECRET;
+      const secret = process.env.DECODE_SECRET;
       const expiration = { expiresIn: "160000s" };
 
       // SIGN TOKEN

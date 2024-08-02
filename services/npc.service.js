@@ -39,6 +39,10 @@ Include a piece of gossip or rumor circulating about the NPC in the community.
 
 Possession or Item:
 Identify a significant possession or item carried by the NPC.
+
+Ideal, Bonds, Flaws
+
+Voice
 */
 
 /*
@@ -51,7 +55,8 @@ TODO: NPC Generator Structure
   Assign a specific job or occupation to the NPC from your extensive list.
 
 - Quirk or Trait:
-  Provide a distinctive quirk, habit, or trait that makes the NPC memorable.
+  Provide a distinctive quirk, habit, or trait that makes the NPC memorable. 
+  TODO: Add traits and habits, right now we just have quirks
 
 - Current Activity:
   Describe what the NPC is currently doing. This adds context to their presence in the world.
@@ -115,54 +120,39 @@ const generateNpc = async (initialSeed, assignedJob) => {
     job = job[gender.name];
   }
 
-  const stats = getStats(seed);
-  const quirk = await getRandomDbElement(seed, "quirk");
-  const activity = await getRandomDbElement(seed, "activity");
-  const hook = await plotHook.generatePlotHook("npc");
+  const [stats, attribute, activity, hook] = await Promise.all([
+    getStats(seed),
+    getRandomDbElement(seed, "NPCAttribute"),
+    getRandomDbElement(seed, "activity"),
+    plotHook.generatePlotHook("npc"),
+  ]);
 
-  const clothing = getRandomElement(
-    seed + "clothing",
-    appearances[gender.name].clothing
-  );
-
-  let facialFeature = getRandomElement(
-    seed + "facial-feature",
-    appearances[gender.name].facialFeatures
-  );
-
-  const accessory = getRandomElement(
-    seed + "accessory",
-    appearances[gender.name].accessories
-  );
+  const genderAppearance = appearances[gender.name];
   const hair = {
-    length: getRandomElement(
-      seed + "hair-length",
-      appearances[gender.name].hair.l
-    ),
-    style: getRandomElement(
-      seed + "hair-style",
-      appearances[gender.name].hair.style
-    ),
+    length: getRandomElement(seed + "hair-length", genderAppearance.hair.l),
+    style: getRandomElement(seed + "hair-style", genderAppearance.hair.style),
     color: getRandomElement(
       seed + "hair-color",
-      appearances[gender.name].hair.colors[race]
+      genderAppearance.hair.colors[race]
     ),
   };
-  const skinColor = getRandomElement(
-    seed + "skin-color",
-    appearances.skinColors[race]
-  );
 
-  let nameRace = race;
-  if (race === "half-elf") {
-    nameRace = getRandomElement(seed + "half-elf", ["human", "elf"]);
-  }
-  if (race === "half-orc") {
-    nameRace = getRandomElement(seed + "half-orc", ["human", "orc"]);
-  }
-  if (race === "tiefling") {
-    nameRace = getRandomElement(seed + "tiefling", ["human", "halfdemon"]);
-  }
+  const [clothing, facialFeature, accessory, skinColor] = [
+    getRandomElement(seed + "clothing", genderAppearance.clothing),
+    getRandomElement(seed + "facial-feature", genderAppearance.facialFeatures),
+    getRandomElement(seed + "accessory", genderAppearance.accessories),
+    getRandomElement(seed + "skin-color", appearances.skinColors[race]),
+  ];
+
+  const nameRace =
+    race === "half-elf"
+      ? getRandomElement(seed + "half-elf", ["human", "elf"])
+      : race === "half-orc"
+      ? getRandomElement(seed + "half-orc", ["human", "orc"])
+      : race === "tiefling"
+      ? getRandomElement(seed + "tiefling", ["human", "halfdemon"])
+      : race;
+
   const name = nameByRace(nameRace, {
     gender: gender.name,
     allowMultipleNames: true,
@@ -177,14 +167,11 @@ const generateNpc = async (initialSeed, assignedJob) => {
     `${gender.pronouns.subject} has ${skinColor} skin, with ${hairString} and ${facialFeature}. ${gender.pronouns.subject} wears ${clothing} and ${accessory}.`
   );
 
-  // Wilga has dark purple hair and black eyes, and rows of shark-like teeth. She wears fine raiment and jewelry. Wilga is easily distracted by arcana.
-  // Face, clothes, skin
-
   return {
     name,
     description,
     job: capitalizeFirstWord(job),
-    quirk,
+    attribute,
     activity,
     stats,
     race: capitalizeFirstWord(race),

@@ -85,7 +85,7 @@ exports.updateProfile = async (req: Request, res: Response) => {
         subscription: foundUser.subscription,
         colorScheme: foundUser.profile.colorScheme,
       };
-      const secret = process.env.SECRET;
+      const secret = process.env.DECODE_SECRET;
       const expiration = { expiresIn: "160000s" };
 
       // SIGN TOKEN
@@ -110,7 +110,7 @@ exports.updateProfile = async (req: Request, res: Response) => {
           subscription: updatedUser.subscription,
           colorScheme: updatedUser.profile.colorScheme,
         };
-        const secret = process.env.SECRET;
+        const secret = process.env.DECODE_SECRET;
         const expiration = { expiresIn: "160000s" };
 
         // SIGN TOKEN

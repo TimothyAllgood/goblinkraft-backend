@@ -2,6 +2,8 @@ module.exports = {
   // Character
   backstory: require("./admin/generatorData/character/backstory.manager"),
   characterClass: require("./admin/generatorData/character/characterClass.manager"),
+  subclass: require("./admin/generatorData/character/subclass.manager"),
+  spell: require("./admin/generatorData/character/spell.manager"),
   race: require("./admin/generatorData/character/race.manager"),
   author: require("./admin/generatorData/character/author.manager"),
   characterTrait: require("./admin/generatorData/character/characterTrait.manager"),

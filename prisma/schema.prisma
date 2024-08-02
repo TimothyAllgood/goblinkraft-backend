@@ -70,10 +70,11 @@ model NPC {
   leadSettlement Settlement? 
 }
 
-model Quirk {
+model NPCAttribute {
   id      Int      @id @default(autoincrement())
   name    String    
   info    String @unique
+  type    String @default("quirk")
 }
 
 model Activity {
@@ -211,6 +212,19 @@ model CharacterClass {
   name      String     
   backstory Backstory[]
   classTrait ClassTrait[]
+  subclasses Subclass[]
+}
+
+model Subclass {
+  id        Int        @id @default(autoincrement())
+  name      String     
+  characterClass   CharacterClass @relation(fields: [characterClassId], references: [id])
+  characterClassId Int
+}
+
+model Spell {
+  id        Int        @id @default(autoincrement())
+  name      String     
 }
 
 model Race {
@@ -306,6 +320,10 @@ model Settlement {
   campaign Campaign  @relation(fields: [campaignId], references: [id], onDelete: Cascade)
 }
 
+model Description {
+  id        Int        @id @default(autoincrement())
+  description String
+}
 
 enum Role {
   USER

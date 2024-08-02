@@ -1,4 +1,4 @@
-import { Quirk } from "@prisma/client";
+import { NPCAttribute } from "@prisma/client";
 import { NameInfo } from "../../../models/NameInfo";
 
 const { PrismaClient } = require("@prisma/client");
@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
 const create = async (body: NameInfo) => {
   const { name, info } = body;
   try {
-    const newQuirk: Quirk = await prisma.quirk.create({
+    const newQuirk: NPCAttribute = await prisma.NPCAttribute.create({
       data: { name, info },
     });
     return newQuirk;
@@ -18,7 +18,7 @@ const create = async (body: NameInfo) => {
 
 const createMany = async (data: NameInfo[]) => {
   try {
-    const newQuirk: Quirk = await prisma.quirk.createMany({
+    const newQuirk: NPCAttribute = await prisma.NPCAttribute.createMany({
       data,
     });
     return newQuirk;
@@ -31,7 +31,7 @@ const createMany = async (data: NameInfo[]) => {
 const update = async (body: NameInfo) => {
   const { id, name, info } = body;
   try {
-    const updatedQuirk: Quirk = await prisma.quirk.update({
+    const updatedQuirk: NPCAttribute = await prisma.NPCAttribute.update({
       where: { id },
       data: { name, info },
     });
@@ -43,7 +43,11 @@ const update = async (body: NameInfo) => {
 
 const get = async () => {
   try {
-    const quirks: Quirk[] = await prisma.quirk.findMany({});
+    const quirks: NPCAttribute[] = await prisma.NPCAttribute.findMany({
+      orderBy: {
+        id: "asc",
+      },
+    });
     return quirks;
   } catch (error: any) {
     return error;
@@ -52,7 +56,7 @@ const get = async () => {
 
 const getById = async (id: number) => {
   try {
-    const quirks: Quirk[] = await prisma.quirk.findMany({
+    const quirks: NPCAttribute[] = await prisma.NPCAttribute.findMany({
       where: {
         id,
       },
@@ -65,7 +69,7 @@ const getById = async (id: number) => {
 
 const deleteById = async (id: number) => {
   try {
-    const quirks: Quirk[] = await prisma.quirk.delete({
+    const quirks: NPCAttribute[] = await prisma.NPCAttribute.delete({
       where: {
         id,
       },
