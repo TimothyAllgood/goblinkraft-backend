@@ -17,13 +17,13 @@ const generateCombatDescription = async (req, res) => {
       {
         role: "system",
         content:
-          'You are a player at a dungeons and dragons table, playing with your friends. The DM just asked "How do you want to do this?" and you responded with: ' +
+          'You are a player at a dungeons and dragons table, playing with your friends. The DM just asked "How do you want to do this?" and you respond in a way that flows naturally and doesn\'t disrupt the game:' +
           newPrompt,
       },
       {
         role: "user",
         content:
-          'You are a player at a dungeons and dragons table, playing with your friends. The DM just asked "How do you want to do this?" and you responded with: ' +
+          'You are a player at a dungeons and dragons table, playing with your friends. The DM just asked "How do you want to do this?" and you respond in a way that flows naturally and doesn\'t disrupt the game:' +
           newPrompt,
       },
     ],
