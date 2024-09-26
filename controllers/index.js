@@ -15,6 +15,7 @@ module.exports = {
   user: require("./user.controller"),
   // Admin Controllers
   admin: require("./admin/admin.controller"),
+  report: require("./admin/report.controller"),
   // Character
   backstory: require("./admin/generatorData/character/backstory.controller"),
   characterClass: require("./admin/generatorData/character/characterClass.controller"),

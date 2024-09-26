@@ -66,6 +66,27 @@ const getById = async (id: number) => {
   }
 };
 
+const getByCharacterClassId = async (characterClass: string) => {
+  try {
+    const characterClassId = await prisma.characterClass.findFirst({
+      where: {
+        name: characterClass,
+      },
+    });
+    const classTraits: ClassTrait[] = await prisma.classTrait.findMany({
+      where: {
+        characterClassId: characterClassId.id,
+      },
+      orderBy: {
+        id: "asc",
+      },
+    });
+    return classTraits;
+  } catch (error: any) {
+    return error;
+  }
+};
+
 const deleteById = async (id: number) => {
   try {
     const classTraits: ClassTrait[] = await prisma.classTrait.delete({
@@ -85,5 +106,6 @@ module.exports = {
   update,
   get,
   getById,
+  getByCharacterClassId,
   deleteById,
 };

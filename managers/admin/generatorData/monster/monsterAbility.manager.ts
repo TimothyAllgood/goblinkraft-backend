@@ -45,7 +45,11 @@ const update = async (body: MonsterAbility) => {
 const get = async () => {
   try {
     const monsterAbilities: MonsterAbility[] =
-      await prisma.monsterAbility.findMany({});
+      await prisma.monsterAbility.findMany({
+        orderBy: {
+          id: "asc",
+        },
+      });
     return monsterAbilities;
   } catch (error: any) {
     console.log(error);

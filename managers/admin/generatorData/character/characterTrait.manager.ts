@@ -64,6 +64,9 @@ const getById = async (id: number) => {
         where: {
           id,
         },
+        orderBy: {
+          id: "asc",
+        },
       });
     return characterTrait;
   } catch (error: any) {

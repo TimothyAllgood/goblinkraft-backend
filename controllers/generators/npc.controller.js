@@ -1,3 +1,4 @@
+const { report } = require("../../managers");
 const { NPC } = require("../../services");
 const OpenAIApi = require("openai");
 
@@ -71,6 +72,7 @@ const generateNpcs = async (req, res) => {
     const npc = await NPC.generateNpc();
     npcs.push(npc);
   }
+  await report.create("NPC Generator");
   res.json({
     npcs,
   });

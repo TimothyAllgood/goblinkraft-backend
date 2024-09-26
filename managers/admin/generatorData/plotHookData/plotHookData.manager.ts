@@ -40,7 +40,11 @@ const update = async (body: PlotHook) => {
 
 const get = async () => {
   try {
-    const plotHooks: PlotHook[] = await prisma.plotHook.findMany({});
+    const plotHooks: PlotHook[] = await prisma.plotHook.findMany({
+      orderBy: {
+        id: "asc",
+      },
+    });
     return plotHooks;
   } catch (error: any) {
     return error;

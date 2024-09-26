@@ -49,6 +49,18 @@ const getById = async (req: Request, res: Response) => {
   }
 };
 
+const getByCharacterClassId = async (req: Request, res: Response) => {
+  const characterClass: string = req.params.characterClass;
+  try {
+    let data: ClassTrait = await manager.classTrait.getByCharacterClassId(
+      characterClass
+    );
+    res.status(200).json(data);
+  } catch (error: any) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
 const deleteById = async (req: Request, res: Response) => {
   const id: number = parseInt(req.params.id, 10);
   try {
@@ -65,5 +77,6 @@ module.exports = {
   update,
   get,
   getById,
+  getByCharacterClassId,
   deleteById,
 };

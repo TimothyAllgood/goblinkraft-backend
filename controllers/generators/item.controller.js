@@ -1,3 +1,4 @@
+const { report } = require("../../managers");
 const { item: itemService } = require("../../services");
 
 const generateItem = async (req, res) => {
@@ -15,6 +16,7 @@ const generateItems = async (req, res) => {
     const npc = await itemService.generateItem();
     items.push(npc);
   }
+  await report.create("Item Generator");
   res.json({
     items,
   });

@@ -8,6 +8,7 @@ const prisma = new PrismaClient();
 const generateMonster = async (req, res) => {
   const { filters } = req.body;
   const monster = await monsterService.generateMonster(filters, true);
+  await manager.report.create("Monster Generator");
   res.json(monster);
 };
 
@@ -23,6 +24,7 @@ const generateMonsters = async (req, res) => {
     );
     monsters.push(monster);
   }
+  await manager.report.create("Monster Generator");
   res.json({ monsters });
 };
 

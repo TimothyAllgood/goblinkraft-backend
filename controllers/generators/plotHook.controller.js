@@ -1,3 +1,4 @@
+const { report } = require("../../managers");
 const { plotHook: plotHookService } = require("../../services");
 const OpenAIApi = require("openai");
 
@@ -6,6 +7,7 @@ const openai = new OpenAIApi({ key: process.env.OPENAI_API_KEY });
 const generatePlotHook = async (req, res) => {
   const { type } = req.body;
   const plotHook = await plotHookService.generatePlotHook(type);
+  await report.create("Plot Hook Generator");
   res.json(plotHook);
 };
 
@@ -43,12 +45,13 @@ const generateAIAdventure = async (req, res) => {
 
 const generatePlotHooks = async (req, res) => {
   const { type } = req.body;
-  let amount = 6;
+  let amount = 3;
   let plotHooks = [];
   for (let i = 0; i < amount; i++) {
     const plotHook = await plotHookService.generatePlotHook(type);
     plotHooks.push(plotHook);
   }
+  await report.create("Plot Hook Generator");
   res.json({ plotHooks });
 };
 

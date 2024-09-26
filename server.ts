@@ -9,6 +9,8 @@ import { PrismaClient } from "@prisma/client";
 export const prisma = new PrismaClient();
 const cors = require("cors");
 const bodyParser = require("body-parser");
+const https = require("https");
+const fs = require("fs");
 
 require("dotenv").config();
 const app = express();
@@ -27,61 +29,61 @@ app.use(
   })
 );
 
-app.post(
-  "/webhook",
-  bodyParser.raw({ type: "application/json" }),
-  async (request, response) => {
-    const payload = request.body;
-    const sig: any = request.headers["stripe-signature"];
+// app.post(
+//   "/webhook",
+//   bodyParser.raw({ type: "application/json" }),
+//   async (request, response) => {
+//     const payload = request.body;
+//     const sig: any = request.headers["stripe-signature"];
 
-    let event;
+//     let event;
 
-    try {
-      event = stripe.webhooks.constructEvent(payload, sig, endpointSecret);
-    } catch (err: any) {
-      return response.status(400).send(`Webhook Error: ${err.message}`);
-    }
+//     try {
+//       event = stripe.webhooks.constructEvent(payload, sig, endpointSecret);
+//     } catch (err: any) {
+//       return response.status(400).send(`Webhook Error: ${err.message}`);
+//     }
 
-    // Handle the checkout.session.completed event
-    if (event.type === "checkout.session.completed") {
-      // Retrieve the session. If you require line items in the response, you may include them by expanding line_items.
-      const sessionWithLineItems = await stripe.checkout.sessions.retrieve(
-        event.data.object.id,
-        {
-          expand: ["line_items"],
-        }
-      );
+//     // Handle the checkout.session.completed event
+//     if (event.type === "checkout.session.completed") {
+//       // Retrieve the session. If you require line items in the response, you may include them by expanding line_items.
+//       const sessionWithLineItems = await stripe.checkout.sessions.retrieve(
+//         event.data.object.id,
+//         {
+//           expand: ["line_items"],
+//         }
+//       );
 
-      const lineItems: any = sessionWithLineItems.line_items;
+//       const lineItems: any = sessionWithLineItems.line_items;
 
-      // Save subscription
-      const user = await prisma.user.update({
-        where: {
-          email: sessionWithLineItems?.customer_details?.email || "",
-        },
-        data: {
-          subscription: lineItems.data[0].description.toLowerCase(),
-          subscriptionId: sessionWithLineItems?.subscription as string,
-          customerId: sessionWithLineItems?.customer as string,
-          subscribed: true,
-        },
-        include: {
-          profile: true,
-        },
-      });
-    }
+//       // Save subscription
+//       const user = await prisma.user.update({
+//         where: {
+//           email: sessionWithLineItems?.customer_details?.email || "",
+//         },
+//         data: {
+//           subscription: lineItems.data[0].description.toLowerCase(),
+//           subscriptionId: sessionWithLineItems?.subscription as string,
+//           customerId: sessionWithLineItems?.customer as string,
+//           subscribed: true,
+//         },
+//         include: {
+//           profile: true,
+//         },
+//       });
+//     }
 
-    if (event.type === "invoice.paid") {
-      // Update subscription
-    }
+//     if (event.type === "invoice.paid") {
+//       // Update subscription
+//     }
 
-    if (event.type === "invoice.payment_failed") {
-      // Update subscription, send email
-    }
+//     if (event.type === "invoice.payment_failed") {
+//       // Update subscription, send email
+//     }
 
-    response.status(200).end();
-  }
-);
+//     response.status(200).end();
+//   }
+// );
 
 app.use(express.urlencoded({ extended: false, limit: "50mb" }));
 app.use(express.json({ limit: "50mb" }));
@@ -117,10 +119,11 @@ async function main() {
   app.use(`${BASE_URL}/towns`, routes.town);
   app.use(`${BASE_URL}/combat`, routes.combat);
   // User
-  app.use(`${BASE_URL}/profiles`, routes.profile);
-  app.use(`${BASE_URL}/users`, routes.user);
+  app.use(`${BASE_URL}/profile`, routes.profile);
+  // app.use(`${BASE_URL}/users`, routes.user);
   // Admin
   app.use(`${BASE_URL}/admin`, routes.admin);
+  app.use(`${BASE_URL}/reports`, routes.report);
   // Characters
   app.use(`${BASE_URL}/backstories/data`, routes.backstory);
   app.use(`${BASE_URL}/characterClasses/data`, routes.characterClass);
@@ -152,40 +155,49 @@ async function main() {
   app.use(`${BASE_URL}/monsters/data`, routes.monsterData);
   app.use(`${BASE_URL}/monsters/abilities`, routes.monsterAbility);
 
-  app.post("/create-subscription", async (req, res) => {
-    const { priceId } = req.body;
-    console.log(priceId);
-    const session: any = await stripe.checkout.sessions.create({
-      mode: "subscription",
-      line_items: [
-        {
-          price: priceId,
-          quantity: 1,
-        },
-      ],
-      ui_mode: "embedded",
-      return_url: `${process.env.CLIENT_URL}/return?session_id={CHECKOUT_SESSION_ID}`,
-    });
-    res.status(200).json({
-      clientSecret: session.client_secret,
-    });
-  });
+  // app.post("/create-subscription", async (req, res) => {
+  //   const { priceId } = req.body;
+  //   console.log(priceId);
+  //   const session: any = await stripe.checkout.sessions.create({
+  //     mode: "subscription",
+  //     line_items: [
+  //       {
+  //         price: priceId,
+  //         quantity: 1,
+  //       },
+  //     ],
+  //     ui_mode: "embedded",
+  //     return_url: `${process.env.CLIENT_URL}/return?session_id={CHECKOUT_SESSION_ID}`,
+  //   });
+  //   res.status(200).json({
+  //     clientSecret: session.client_secret,
+  //   });
+  // });
 
-  app.get("/session-status", async (req: any, res) => {
-    const session: any = await stripe.checkout.sessions.retrieve(
-      req.query.session_id
-    );
+  // app.get("/session-status", async (req: any, res) => {
+  //   const session: any = await stripe.checkout.sessions.retrieve(
+  //     req.query.session_id
+  //   );
 
-    res.send({
-      status: session.status,
-      customer_email: session.customer_details.email,
-    });
-  });
+  //   res.send({
+  //     status: session.status,
+  //     customer_email: session.customer_details.email,
+  //   });
+  // });
 
   // Catch unregistered routes
   app.all("*", (req: Request, res: Response) => {
     res.status(404).json({ error: `Route ${req.originalUrl} not found` });
   });
+
+  const options = {
+    key: fs.readFileSync("cert.key"),
+    cert: fs.readFileSync("cert.crt"),
+  };
+
+  // https.createServer(options, app).listen(port, () => {
+  //   console.log(`Server is listening on port ${port}`);
+  // });
 
   app.listen(port, () => {
     console.log(`Server is listening on port ${port}`);

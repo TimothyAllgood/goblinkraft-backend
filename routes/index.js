@@ -15,6 +15,7 @@ module.exports = {
   user: require("./user.route"),
   // Admin
   admin: require("./admin/admin.route"),
+  report: require("./admin/report.route"),
   // NPCs
   quirk: require("./admin/generatorData/quirk.route"),
   activity: require("./admin/generatorData/activity.route"),

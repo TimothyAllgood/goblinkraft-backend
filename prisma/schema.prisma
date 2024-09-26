@@ -15,8 +15,10 @@ model Profile {
   bio    String?
   firstName   String?
   lastName    String?
-  user   User    @relation(fields: [userId], references: [id])
-  userId Int     @unique
+  email        String?     @unique
+  username     String?     @unique
+  auth0Id String? @unique
+  role         Role       @default(USER)
   userImageId Int? @unique
   userImage Image?  @relation(fields: [userImageId], references: [id], onDelete: Cascade)
   colorScheme String? @default("goblinmode")
@@ -24,17 +26,6 @@ model Profile {
 
 model User {
   id           Int        @id @default(autoincrement())
-  email        String     @unique
-  username     String     @unique
-  password     String?
-  subscription String?
-  subscriptionId String?
-  customerId String?
-  subscribed   Boolean    @default(false)
-  verified     Boolean    @default(false)
-  role         Role       @default(USER)
-  profile      Profile?
-  type         String     @default("password")
   campaigns    Campaign[]
 }
 
@@ -323,6 +314,12 @@ model Settlement {
 model Description {
   id        Int        @id @default(autoincrement())
   description String
+}
+
+model Report {
+  id        Int        @id @default(autoincrement())
+  generator      String
+  createdAt DateTime @default(now())
 }
 
 enum Role {

@@ -12,6 +12,7 @@ router.post("/bulk", ctrl.classTrait.createMany);
 router.post("/update", ctrl.classTrait.update);
 router.get("/", ctrl.classTrait.get);
 router.get("/:id", ctrl.classTrait.getById);
+router.get("/class/:characterClass", ctrl.classTrait.getByCharacterClassId);
 router.delete("/delete/:id", ctrl.classTrait.deleteById);
 
 // exports

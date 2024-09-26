@@ -29,4 +29,6 @@ module.exports = {
   // Monster
   monster: require("./admin/generatorData/monster/monster.manager"),
   monsterAbility: require("./admin/generatorData/monster/monsterAbility.manager"),
+  // Reports
+  report: require("./admin/report.manager"),
 };
