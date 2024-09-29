@@ -17,14 +17,31 @@ const create = async (body: NameInfo) => {
 };
 
 const createMany = async (data: NameInfo[]) => {
-  try {
-    const newActivity: Activity = await prisma.activity.createMany({
-      data,
-    });
-    return newActivity;
-  } catch (error: any) {
-    console.log(error);
-    return error;
+  // try {
+  //   const newActivity: Activity = await prisma.activity.createMany({
+  //     data,
+  //   });
+  //   return newActivity;
+  // } catch (error: any) {
+  //   console.log(error);
+  //   return error;
+  // }
+  for (const item of data) {
+    try {
+      // Attempt to insert each item individually
+      await prisma.activity.create({
+        data: item,
+      });
+    } catch (error: any) {
+      if (error.code === "P2002") {
+        // Log the item that caused the unique constraint violation
+        console.log(error.meta.target);
+        console.log("Unique constraint violation for item: ", item);
+      } else {
+        // Log other errors
+        console.log("Error:", error);
+      }
+    }
   }
 };
 
